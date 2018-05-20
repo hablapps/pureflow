@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import es.hablapps.etl.common.IAmARawGeneric
 import es.hablapps.etl.common.enricher.EnricherComponent
+import es.hablapps.etl.common.sink.SinkComponent
 import es.hablapps.etl.common.source.ReaderComponent
 import org.apache.hadoop.hbase.spark.HBaseContext
 import org.apache.spark.rdd.RDD
@@ -15,7 +16,7 @@ import scala.reflect.ClassTag
 
 trait Pipeline[K <: Product, R <: IAmARawGeneric[K], E <: Product] {
   this: ReaderComponent[K, R]
-    //with SinkComponent[E]
+    with SinkComponent[E]
     with EnricherComponent[K, R, E] =>
 
   def pipeline : Pipeline
@@ -48,8 +49,7 @@ trait Pipeline[K <: Product, R <: IAmARawGeneric[K], E <: Product] {
 
       if (LOG.isDebugEnabled) LOG.debug("Starting the enrichment")
 
-      //phoenixTransactionSink.init(sc, hc, Some(keyTabFilePath))
-      //phoenixTransactionSink.sink(sc, hc, enriched)
+      sink.sinkPhoenix(hc, enriched)
 
       if(LOG.isInfoEnabled)
         LOG.info("Time: [{}]secs Counters: [{}] fully enriched [{}] with issues, [{}] critical[{}]",

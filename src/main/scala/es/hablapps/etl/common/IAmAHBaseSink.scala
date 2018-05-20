@@ -1,7 +1,8 @@
 package es.hablapps.etl.common
 
+import org.apache.hadoop.hbase.spark.HBaseContext
+import org.apache.spark.rdd.RDD
+
 trait IAmAHBaseSink[T] {
-//  def init(sc:SparkContext, hc:HBaseContext) : Unit = {}
-//  def init(sc:SparkContext, hc:HBaseContext, keyTabPath: Option[String] = None) : Unit = {}
-//  def sink(sc:SparkContext, hBaseContext: HBaseContext, partitionedForHBase : RDD[T]) : Unit
+  def sinkPhoenix(hBaseContext: HBaseContext, partitionedForHBase : RDD[T]) : Unit
 }
