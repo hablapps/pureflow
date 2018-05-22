@@ -65,9 +65,6 @@ lazy val root = (project in file("."))
       "org.apache.hadoop" % "hadoop-yarn-server-web-proxy" % hadoopVersion % "compile,test" classifier "" classifier "tests",
       "org.apache.hadoop" % "hadoop-minicluster" % hadoopVersion % "compile,test")),
 
-    //Logging
-    libraryDependencies += "org.apache.logging.log4j" % "log4j-core" % "2.7",
-
     // Testing
     libraryDependencies += "com.holdenkarau" %% "spark-testing-base" % holdenKarauVersion % "test" excludeAll ExclusionRule(organization = "org.apache.hadoop"),
 

@@ -8,8 +8,6 @@ import es.hablapps.etl.common.{IAmAEnricherComponent, IAmAHBaseSink, IAmASparkSQ
 import es.hablapps.etl.population.enricher.Enricher
 import es.hablapps.etl.population.model.{EnrichedPopulation, PopulationPK, RawPopulation}
 import es.hablapps.etl.population.sources.PopulationReader
-import org.apache.hadoop.hbase.spark.HBaseContext
-import org.apache.spark.rdd.RDD
 
 object PopulationDriver {
 

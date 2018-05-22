@@ -4,7 +4,6 @@ import java.sql.{Connection, DriverManager, Statement}
 
 import com.holdenkarau.spark.testing.SharedSparkContext
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.hbase.regionserver.ShutdownHook
 import org.apache.hadoop.hbase.spark.HBaseContext
 import org.apache.hadoop.hbase.{HBaseTestingUtility, HConstants}
 import org.apache.phoenix.end2end.BaseHBaseManagedTimeIT
@@ -40,7 +39,6 @@ trait TestingSuite extends FlatSpec with Matchers with SharedSparkContext  {
     PhoenixSparkITHelper.doSetup()
 
     val query = s"CREATE TABLE IF NOT EXISTS ${PopulationTable.tableName} (${PopulationTable.city} VARCHAR NOT NULL, ${PopulationTable.state} CHAR(2), ${PopulationTable.population} BIGINT  CONSTRAINT my_pk PRIMARY KEY (${PopulationTable.city})) DEFAULT_COLUMN_FAMILY='P'"
-    println(query)
     stmt.execute(query)
     stmt.execute(s"UPSERT INTO ${PopulationTable.tableName} values ('San Francisco', 'CA', 837442)")
     stmt.execute(s"UPSERT INTO ${PopulationTable.tableName} values ('New York', 'NY', 11231312)")
