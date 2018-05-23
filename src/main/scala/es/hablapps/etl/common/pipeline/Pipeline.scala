@@ -4,28 +4,26 @@ import java.util.concurrent.TimeUnit
 
 import es.hablapps.etl.common.IAmARawGeneric
 import es.hablapps.etl.common.enricher.EnricherComponent
+import es.hablapps.etl.common.sink.SinkComponent
 import es.hablapps.etl.common.source.ReaderComponent
 import org.apache.hadoop.hbase.spark.HBaseContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SQLContext
-import org.apache.spark.{Accumulator, HashPartitioner, SparkContext}
-import org.slf4j.{Logger, LoggerFactory}
+import org.apache.spark.{Accumulator, HashPartitioner, Logging, SparkContext}
 
 import scala.reflect.ClassTag
 
 trait Pipeline[K <: Product, R <: IAmARawGeneric[K], E <: Product] {
   this: ReaderComponent[K, R]
-    //with SinkComponent[E]
+    with SinkComponent[E]
     with EnricherComponent[K, R, E] =>
 
   def pipeline : Pipeline
 
   def runPipeline(sc : SparkContext, hc:HBaseContext)(implicit ctr: ClassTag[R],cte: ClassTag[E], ctk: ClassTag[K]): (RDD[(K, R)],RDD[E]) = pipeline(sc, hc)
 
-  class Pipeline(partitionNumber: Int)
+  class Pipeline(partitionNumber: Int) extends Logging
   {
-
-    val LOG: Logger = LoggerFactory.getLogger(classOf[Pipeline])
 
     def apply(sc: SparkContext, hc: HBaseContext)(implicit ctr: ClassTag[R],cte: ClassTag[E], ctk: ClassTag[K]): (RDD[(K ,R)],RDD[E]) = {
 
@@ -41,22 +39,20 @@ trait Pipeline[K <: Product, R <: IAmARawGeneric[K], E <: Product] {
       val raw: RDD[(K, R)] = reader.query(sqlContext)
 
       val reducedRaw = raw.reduceByKey(new HashPartitioner(partitionNumber), (v1, _) => { reducedByKey.add(1) ; v1 })
-      if (LOG.isDebugEnabled) LOG.debug("reduceByKey has reduced {} keys ... ", reducedByKey.value)
+      logDebug(s"reduceByKey has reduced ${reducedByKey.value} keys ... ")
 
 
       val enriched: RDD[E] = enricher.enrich(reducedRaw)
 
-      if (LOG.isDebugEnabled) LOG.debug("Starting the enrichment")
+      logDebug("Starting the enrichment")
 
-      //phoenixTransactionSink.init(sc, hc, Some(keyTabFilePath))
-      //phoenixTransactionSink.sink(sc, hc, enriched)
+      sink.sinkPhoenix(hc, enriched)
 
-      if(LOG.isInfoEnabled)
-        LOG.info("Time: [{}]secs Counters: [{}] fully enriched [{}] with issues, [{}] critical[{}]",
-          TimeUnit.SECONDS.convert(System.nanoTime - startTime, TimeUnit.NANOSECONDS).toString,
-          fullyEnriched,
-          enrichedWithProblems,
-          criticalErrors)
+      logInfo(s"Time: [${TimeUnit.SECONDS.convert(System.nanoTime - startTime, TimeUnit.NANOSECONDS).toString}]secs Counters: " +
+        s"[${fullyEnriched}] fully enriched " +
+        s"[${enrichedWithProblems}] with issues, " +
+        s"[${failErrors}] with errors, " +
+        s"[${criticalErrors}] critical")
 
       raw.unpersist(true)
       (raw, enriched)

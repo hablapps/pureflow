@@ -48,7 +48,10 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       "org.apache.hbase" % "hbase-common",
       "org.apache.hbase" % "hbase-server",
-      "org.apache.hbase" % "hbase-spark"
+      "org.apache.hbase" % "hbase-spark",
+      "org.apache.hbase" % "hbase-it",
+      "org.apache.hbase" % "hbase-hadoop-compat",
+      "org.apache.hbase" % "hbase-hadoop2-compat"
     ).map(_ % hbaseVersion)
     .map(_ % "compile,test" classifier "" classifier "tests"),
 
@@ -74,11 +77,7 @@ lazy val root = (project in file("."))
       "com.amazonaws",
       "io.dropwizard",
       "org.apache.mesos",
-      "org.apache.tephra",
-      "org.apache.twill",
       "com.ibm.icu",
-      "com.sun.jersey",
-      "org.mortbay.jetty",
       "tomcat"
     )
   )

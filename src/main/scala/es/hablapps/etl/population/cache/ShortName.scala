@@ -6,7 +6,7 @@ import scala.util.{Failure, Success, Try}
 case class ShortName() {
   def get(name:String): String = Try(ShortName.names(name)) match {
     case Success(v) => v
-    case Failure(e) => "Not Found"
+    case Failure(e) => "NF"
   }
 }
 
