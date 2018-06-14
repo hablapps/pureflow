@@ -1,14 +1,14 @@
 package org.hablapps.etl
-package v0
+package populations
+package workflow
 
 import cats.Monad, cats.syntax.flatMap._, cats.syntax.applicative._, cats.syntax.functor._
 
 object Workflow{
 
-  def apply[P[_]](cities_src: String, 
+  def apply[P[_]: Monad](cities_src: String, 
       populations_src: String,
       enriched_dst: String)(implicit 
-      M: Monad[P],
       ReadCities: Reader[P,City],
       ReadPopulations: Reader[P,Population],
       SaveEnrichedPopulations: Writer[P,EnrichedPopulation]): P[Unit] = for {

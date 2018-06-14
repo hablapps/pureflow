@@ -1,4 +1,5 @@
 package org.hablapps.etl
-package v0
+package populations
+package workflow
 
 case class City(name: String, abbrev: String)

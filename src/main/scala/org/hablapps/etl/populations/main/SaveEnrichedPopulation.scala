@@ -1,5 +1,8 @@
 package org.hablapps.etl
-package v0
+package populations
+package main
+
+import workflow.EnrichedPopulation
 
 object SaveEnrichedPopulations extends PhoenixWriter[EnrichedPopulation]{
   val Columns = List("CITY", "P.STATE", "P.POPULATION")

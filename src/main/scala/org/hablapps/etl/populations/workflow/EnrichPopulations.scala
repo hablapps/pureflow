@@ -1,5 +1,6 @@
 package org.hablapps.etl
-package v0
+package populations
+package workflow
 
 import org.apache.spark.rdd.RDD
 

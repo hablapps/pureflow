@@ -1,5 +1,6 @@
 package org.hablapps.etl
-package v0
+package populations
+package workflow
 
 case class Population(name: String, population: Long)
 

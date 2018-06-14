@@ -1,5 +1,6 @@
 package org.hablapps.etl
-package v0
+package populations
+package main
 
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.SQLContext
@@ -7,8 +8,10 @@ import org.apache.hadoop.hbase.spark.HBaseContext
 
 import cats.Monad, cats.data.{Reader => CReader}
 
+import workflow._
+
 object Main{
-  
+
   // COMPILE TO READER
 
   type P[t] = CReader[(Map[String,Seq[_]], SparkContext, SQLContext, HBaseContext),t]
