@@ -81,7 +81,9 @@ lazy val root = (project in file("."))
       "org.apache.mesos",
       "com.ibm.icu",
       "tomcat"
-    )
+    ),
+
+    addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3")
   )
 
 // Based on Hadoop Mini Cluster tests from Alpine's PluginSDK (Apache licensed)

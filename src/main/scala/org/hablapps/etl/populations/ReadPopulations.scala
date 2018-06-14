@@ -7,7 +7,7 @@ import org.apache.spark.rdd.RDD
 import cats.data.{NonEmptyList, ValidatedNel, Validated}, Validated.Valid
 import cats.syntax.cartesian._
 
-object ReadPopulations extends Reader[Population] with ValidatedHelpers{
+object ReadPopulations extends SQLReader[Population] with ValidatedHelpers{
   type Error = Population.Error
 
   def parse(row: Row): ValidatedNel[Error, Population] =

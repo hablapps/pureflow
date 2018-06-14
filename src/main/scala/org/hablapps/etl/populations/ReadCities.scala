@@ -4,11 +4,6 @@ package v0
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
-object ReadCities{
+import cats.data.{ Reader => CReader }
 
-  def apply(sc: SparkContext): RDD[City] = 
-    sc.parallelize(Seq(
-    City("Madrid", "MA"),
-    City("Barcelona", "BA"),
-    City("Zamora", "ZA")))
-}
+object ReadCities extends MapReader[City]

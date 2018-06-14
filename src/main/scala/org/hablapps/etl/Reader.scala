@@ -2,39 +2,32 @@ package org.hablapps.etl
 
 import scala.reflect.ClassTag
 
-import org.apache.spark.sql.{Row, DataFrame, SQLContext}
 import org.apache.spark.rdd.RDD
 
 import cats.data.{ValidatedNel, Validated}, Validated.{Invalid, Valid}
-import cats.syntax.cartesian._
+import cats.Functor, cats.syntax.functor._
 
-trait Reader[T]{
+trait Reader[P[_],T]{
+  implicit val F: Functor[P]
+  
+  type Data
   type Error
 
-  def parse(row: Row): ValidatedNel[Error, T]
+  def parse(data: Data): ValidatedNel[Error, T]
 
-  def apply(source: String)(implicit 
-    sqlContext: SQLContext): RDD[Validated[(Row,List[Error]), T]] = 
-    sqlContext.read.load(source)
-      .map( row => parse(row).leftMap(nel => (row,nel.toList)))
+  def load(from: String): P[RDD[Data]]
 
-  def valid(source: String)(implicit 
-      sqlContext: SQLContext,
-      ct: ClassTag[T]): RDD[T] = 
-    apply(source)(sqlContext)
-      .collect{ case Valid(value) => value }
+  def apply(from: String): P[RDD[Validated[(Data,List[Error]), T]]] = 
+    load(from).map(
+      _.map( data => parse(data).leftMap(nel => (data,nel.toList))))
+
+  def valid(from: String)(implicit
+      ct: ClassTag[T]): P[RDD[T]] = 
+    apply(from).map(
+      _.collect{ case Valid(value) => value })
   
-  def invalid(source: String)(implicit 
-      sqlContext: SQLContext,
-      ct: ClassTag[T]): RDD[(Row, List[Error])] = 
-    apply(source)(sqlContext)
-      .collect{ case Invalid(error) => error }
+  def invalid(from: String)(implicit 
+      ct: ClassTag[T]): P[RDD[(Data, List[Error])]] = 
+    apply(from).map(
+      _.collect{ case Invalid(error) => error })
 }
-
-
-
-
-
-
-
-
