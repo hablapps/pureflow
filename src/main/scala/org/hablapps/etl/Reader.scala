@@ -7,7 +7,7 @@ import org.apache.spark.rdd.RDD
 import cats.data.{ValidatedNel, Validated}, Validated.{Invalid, Valid}
 import cats.Functor, cats.syntax.functor._
 
-trait Reader[P[_],T]{
+trait Reader[P[_],T] extends java.io.Serializable{
   implicit val F: Functor[P]
   
   type Data
@@ -55,7 +55,7 @@ object Reader{
 
   import cats.data.{Reader => CReader}
 
-  implicit def fromP[E1,E2,T](implicit 
+  implicit def toReader[E1,E2,T](implicit 
       R: Reader[CReader[E1,?],T],
       view: E2 => E1) =
     new Reader[CReader[E2,?], T]{
@@ -67,4 +67,21 @@ object Reader{
       def load(from: String) = R.load(from).local(view)
     }
 
+  import cats.data.State
+
+  implicit def toState[E1,E2,T](implicit 
+      R: Reader[CReader[E1,?],T],
+      view: E2 => E1) =
+    new Reader[State[E2,?], T]{
+      type Data = R.Data
+      type Error = R.Error
+
+      val F = implicitly[cats.Functor[State[E2,?]]]
+
+      def parse(data: Data) = 
+        R.parse(data)
+
+      def load(from: String) = 
+        State{ e2 => (e2, R.load(from)(view(e2))) }
+    }
 }
