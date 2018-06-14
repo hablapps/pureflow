@@ -10,6 +10,7 @@ package object etl{
 
   // Reader transformations
 
-  implicit def tuple3to12[A,B,C]: ((A,B,C)) => (A,B) = t => (t._1,t._2)
-  implicit def tuple3to3[A,B,C]: ((A,B,C)) => C = t => t._3
+  implicit def tuple4to12[A,B,C,D]: ((A,B,C,D)) => (A,B) = t => (t._1,t._2)
+  implicit def tuple4to3[A,B,C,D]: ((A,B,C,D)) => C = t => t._3
+  implicit def tuple4to4[A,B,C,D]: ((A,B,C,D)) => D = t => t._4
 }
