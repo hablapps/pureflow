@@ -10,10 +10,14 @@ object Writer{
 
   import cats.data.{Reader => CReader}
   
-  implicit def fromP[E1,E2,T](implicit 
+  implicit def toReader[E1,E2,T](implicit 
     w: Writer[CReader[E1,?],T],
     f: E2 => E1) = new Writer[CReader[E2,?],T]{
     def write(dataset: RDD[T], destination: String) = 
       w.write(dataset,destination).local(f)
   }
+
+  implicit def toReaderView[E1,E2,T](
+    w: Writer[CReader[E1,?],T])(implicit 
+    f: E2 => E1) = toReader(w,f)
 }

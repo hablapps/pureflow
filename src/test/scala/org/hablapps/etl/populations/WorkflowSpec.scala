@@ -15,14 +15,10 @@ class WorkflowSpec extends FunSpec with Matchers with SharedSparkContext{
 
   // COMPILE TO READER
 
-  type Program[t] = State[MapWriter.Env,t]
-
-  implicit val r1: Reader[CReader[MapReader.Env,?], City] = main.ReadCities
-  implicit val r2: Reader[CReader[MapReader.Env,?], Population] = ReadPopulations
-  implicit val w1: Writer[Program, EnrichedPopulation] = SaveEnrichedPopulations
-
-  val program: Program[Unit] = Workflow[Program](
+  val program: Program[Unit] = TestWorkflow.run(
     "cities.seq", "populations.seq", "enrichedpopulations.seq")
+
+  // RUN
 
   describe("Populations"){
     it("should be enriched"){

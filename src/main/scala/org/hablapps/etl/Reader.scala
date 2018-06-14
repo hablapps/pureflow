@@ -67,6 +67,10 @@ object Reader{
       def load(from: String) = R.load(from).local(view)
     }
 
+  implicit def toReaderView[E1,E2,T](R: Reader[CReader[E1,?],T])(implicit 
+      view: E2 => E1) =
+    toReader(R,view)
+
   import cats.data.State
 
   implicit def toState[E1,E2,T](implicit 
@@ -84,4 +88,10 @@ object Reader{
       def load(from: String) = 
         State{ e2 => (e2, R.load(from)(view(e2))) }
     }
+
+  implicit def toStateView[E1,E2,T](
+      R: Reader[CReader[E1,?],T])(implicit 
+      view: E2 => E1) =
+        toState(R,view)
+  
 }

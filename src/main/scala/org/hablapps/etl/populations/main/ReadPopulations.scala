@@ -2,10 +2,9 @@ package org.hablapps.etl
 package populations
 package main
 
-import org.apache.spark.sql.{Row, DataFrame, SQLContext}
-import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.Row
 
-import cats.data.{NonEmptyList, ValidatedNel, Validated}, Validated.Valid
+import cats.data.ValidatedNel
 import cats.syntax.cartesian._
 
 import workflow.Population

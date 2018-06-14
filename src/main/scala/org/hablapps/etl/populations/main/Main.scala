@@ -3,26 +3,12 @@ package populations
 package main
 
 import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.sql.SQLContext
 import org.apache.hadoop.hbase.spark.HBaseContext
-
-import cats.Monad, cats.data.{Reader => CReader}
+import org.apache.spark.sql.SQLContext
 
 import workflow._
 
 object Main{
-
-  // COMPILE TO READER
-
-  type P[t] = CReader[(Map[String,Seq[_]], SparkContext, SQLContext, HBaseContext),t]
-  
-  implicit val r1: Reader[CReader[MapReader.Env,?], City] = ReadCities
-  implicit val r2: Reader[CReader[SQLContext,?], Population] = ReadPopulations
-  implicit val w1: Writer[CReader[HBaseContext,?], EnrichedPopulation] = SaveEnrichedPopulations
-
-  val program: P[Unit] = Workflow[P]("cities.src", "populations.parquet", "enriched")
-  
-  // RUN READER
 
   val cfg = new SparkConf().setAppName("pipelines")
   val sc = SparkContext.getOrCreate(cfg)
@@ -33,5 +19,5 @@ object Main{
     City("Barcelona", "BA"),
     City("Zamora", "ZA")))
 
-  program((map, sc, sqlContext, hc))
+  MainWorkflow.run("cities.seq", "populations.parquet", "enriched.hb").apply((map, sc, sqlContext, hc))
 }
