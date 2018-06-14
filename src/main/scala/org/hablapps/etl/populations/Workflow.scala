@@ -10,7 +10,7 @@ object Workflow{
 
   def apply(sc: SparkContext, hc: HBaseContext): Unit = {
     val cities = ReadCities(sc)
-    val populations = ReadPopulations(new SQLContext(sc))
+    val populations = ReadPopulations.valid("populations.parquet")(new SQLContext(sc))
     val enrichedPopulations = EnrichPopulations(populations, cities)
     SaveEnrichedPopulations(hc, enrichedPopulations)
   }
