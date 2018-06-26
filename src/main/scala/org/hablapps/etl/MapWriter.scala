@@ -6,7 +6,7 @@ import org.apache.spark.SparkContext
 import cats.data.State
 import MapWriter.Env
 
-trait MapWriter[T] extends Writer[State[Env,?],T]{
+abstract class MapWriter[T] extends Writer[State[Env,?],T]{
   def write(dataset: RDD[T], destination: String): State[Env,Unit] =
     State{
       map => (map + (destination -> dataset.collect), ())

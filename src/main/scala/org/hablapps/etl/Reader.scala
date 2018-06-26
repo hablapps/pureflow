@@ -7,9 +7,7 @@ import org.apache.spark.rdd.RDD
 import cats.data.{ValidatedNel, Validated}, Validated.{Invalid, Valid}
 import cats.Functor, cats.syntax.functor._
 
-trait Reader[P[_],T] extends java.io.Serializable{
-  implicit val F: Functor[P]
-  
+abstract class Reader[P[_]: Functor, T] extends java.io.Serializable{
   type Data
   type Error
 
@@ -17,17 +15,17 @@ trait Reader[P[_],T] extends java.io.Serializable{
 
   def load(from: String): P[RDD[Data]]
 
-  def apply(from: String): P[RDD[Validated[(Data,List[Error]), T]]] = 
+  def apply(from: String): P[RDD[Validated[(Data,List[Error]), T]]] =
     load(from).map(
       _.map( data => parse(data).leftMap(nel => (data,nel.toList))))
 
   def valid(from: String)(implicit
-      ct: ClassTag[T]): P[RDD[T]] = 
+      ct: ClassTag[T]): P[RDD[T]] =
     apply(from).map(
       _.collect{ case Valid(value) => value })
-  
-  def invalid(from: String)(implicit 
-      ct: ClassTag[T]): P[RDD[(Data, List[Error])]] = 
+
+  def invalid(from: String)(implicit
+      ct: ClassTag[T]): P[RDD[(Data, List[Error])]] =
     apply(from).map(
       _.collect{ case Invalid(error) => error })
 }
@@ -35,8 +33,8 @@ trait Reader[P[_],T] extends java.io.Serializable{
 object Reader{
 
   // import cats.~>
-  
-  // implicit def fromP[P[_],Q[_]: Functor,T](implicit 
+
+  // implicit def fromP[P[_],Q[_]: Functor,T](implicit
   //     R: Reader[P,T],
   //     nat: P ~> Q) =
   //   new Reader[Q, T]{
@@ -48,14 +46,14 @@ object Reader{
   //     def load(from: String) = nat(R.load(from))
   //   }
 
-  // implicit def fromReader[E1,E2](implicit f: E1 => E2): CReader[E2,?] ~> CReader[E1, ?] =   
+  // implicit def fromReader[E1,E2](implicit f: E1 => E2): CReader[E2,?] ~> CReader[E1, ?] =
   //   new (CReader[E2,?]~>CReader[E1,?]){
   //     def apply[T](r: CReader[E2,T]) = r.local(f)
   //   }
 
   import cats.data.{Reader => CReader}
 
-  implicit def toReader[E1,E2,T](implicit 
+  implicit def toReader[E1,E2,T](implicit
       R: Reader[CReader[E1,?],T],
       view: E2 => E1) =
     new Reader[CReader[E2,?], T]{
@@ -67,13 +65,13 @@ object Reader{
       def load(from: String) = R.load(from).local(view)
     }
 
-  implicit def toReaderView[E1,E2,T](R: Reader[CReader[E1,?],T])(implicit 
+  implicit def toReaderView[E1,E2,T](R: Reader[CReader[E1,?],T])(implicit
       view: E2 => E1) =
     toReader(R,view)
 
   import cats.data.State
 
-  implicit def toState[E1,E2,T](implicit 
+  implicit def toState[E1,E2,T](implicit
       R: Reader[CReader[E1,?],T],
       view: E2 => E1) =
     new Reader[State[E2,?], T]{
@@ -82,16 +80,16 @@ object Reader{
 
       val F = implicitly[cats.Functor[State[E2,?]]]
 
-      def parse(data: Data) = 
+      def parse(data: Data) =
         R.parse(data)
 
-      def load(from: String) = 
+      def load(from: String) =
         State{ e2 => (e2, R.load(from)(view(e2))) }
     }
 
   implicit def toStateView[E1,E2,T](
-      R: Reader[CReader[E1,?],T])(implicit 
+      R: Reader[CReader[E1,?],T])(implicit
       view: E2 => E1) =
-        toState(R,view)
-  
+    toState(R,view)
+
 }

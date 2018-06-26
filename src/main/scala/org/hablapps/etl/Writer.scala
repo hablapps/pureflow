@@ -2,7 +2,7 @@ package org.hablapps.etl
 
 import org.apache.spark.rdd.RDD
 
-trait Writer[P[_],T]{
+abstract class Writer[P[_],T]{
   def write(dataset: RDD[T], destination: String): P[Unit]
 }
 

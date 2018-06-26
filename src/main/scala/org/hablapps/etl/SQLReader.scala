@@ -7,10 +7,9 @@ import cats.data.{Reader => CReader}
 import cats.Functor
 
 trait SQLReader[T] extends Reader[CReader[SQLContext,?],T]{
-  implicit val F: Functor[CReader[SQLContext,?]] = implicitly
-  
+
   type Data = Row
 
-  def load(from: String): CReader[SQLContext, RDD[Data]] = 
+  def load(from: String): CReader[SQLContext, RDD[Data]] =
     CReader( _.read.load(from).rdd )
 }

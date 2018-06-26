@@ -11,16 +11,15 @@ import cats.Functor
 
 import MapReader.Env
 
-abstract class MapReader[T](implicit CT: ClassTag[T]) 
+abstract class MapReader[T](implicit CT: ClassTag[T])
 extends Reader[CReader[Env, ?], T]{
-  implicit val F: Functor[CReader[Env, ?]] = implicitly
-  
+
   type Data = T
-  
-  def parse(data: Data): ValidatedNel[Error, T] = 
+
+  def parse(data: Data): ValidatedNel[Error, T] =
     Validated.valid(data)
 
-  def load(from: String): CReader[Env, RDD[Data]] = 
+  def load(from: String): CReader[Env, RDD[Data]] =
     CReader{
       case (data, sc) => sc.parallelize(data(from).asInstanceOf[Seq[T]])
     }
