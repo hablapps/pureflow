@@ -13,9 +13,16 @@ import workflow._
 
 class WorkflowSpec extends FunSpec with Matchers with SharedSparkContext{
 
+  // CREATE WORKFLOW
+
+  val workflow = Workflow[Program](
+    main.ReadCities,
+    test.ReadPopulations,
+    test.SaveEnrichedPopulations)
+
   // COMPILE TO READER
 
-  val program: Program[Unit] = TestWorkflow.run(
+  val program: Program[Unit] = workflow.run(
     "cities.seq", "populations.seq", "enrichedpopulations.seq")
 
   // RUN
@@ -34,8 +41,8 @@ class WorkflowSpec extends FunSpec with Matchers with SharedSparkContext{
         sc)).value
 
       resultingState("enrichedpopulations.seq").toSeq shouldBe Seq(
-        EnrichedPopulation("Zamora","ZA",1000), 
-        EnrichedPopulation("Madrid","MA",3000), 
+        EnrichedPopulation("Zamora","ZA",1000),
+        EnrichedPopulation("Madrid","MA",3000),
         EnrichedPopulation("Barcelona","BA",2000))
     }
   }

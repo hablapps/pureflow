@@ -10,6 +10,19 @@ import workflow._
 
 object Main{
 
+  // Create workflow
+
+  val workflow = Workflow[Program](
+    main.ReadCities,
+    main.ReadPopulations,
+    main.SaveEnrichedPopulations)
+
+  // Compile workflow
+
+  val compiledProgram = workflow.run("cities.seq", "populations.parquet", "enriched.hb")
+
+  // Run workflow
+
   val cfg = new SparkConf().setAppName("pipelines")
   val sc = SparkContext.getOrCreate(cfg)
   val sqlContext = new SQLContext(sc)
@@ -19,5 +32,5 @@ object Main{
     City("Barcelona", "BA"),
     City("Zamora", "ZA")))
 
-  MainWorkflow.run("cities.seq", "populations.parquet", "enriched.hb").apply((map, sc, sqlContext, hc))
+  compiledProgram((map, sc, sqlContext, hc))
 }
