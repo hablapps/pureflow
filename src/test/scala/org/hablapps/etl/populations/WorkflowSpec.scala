@@ -5,8 +5,6 @@ package test
 import org.scalatest._
 import com.holdenkarau.spark.testing.SharedSparkContext
 
-import org.apache.spark.SparkContext
-
 import cats.data.{Reader => CReader, State}
 
 import workflow._

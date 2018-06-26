@@ -7,12 +7,12 @@ import cats.data.State
 import MapWriter.Env
 
 trait MapWriter[T] extends Writer[State[Env,?],T]{
-  def write(dataset: RDD[T], destination: String): State[Env,Unit] = 
+  def write(dataset: RDD[T], destination: String): State[Env,Unit] =
     State{
-      case (map, sc) => ((map + (destination -> dataset.collect),sc), ())
+      map => (map + (destination -> dataset.collect), ())
     }
 }
 
 object MapWriter{
-  type Env = (Map[String,Seq[_]], SparkContext)
+  type Env = Map[String,Seq[_]]
 }
