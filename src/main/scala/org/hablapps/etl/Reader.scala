@@ -11,8 +11,6 @@ abstract class Reader[Collection[_], P[_], T] extends java.io.Serializable{
   type Data
   type Error
 
-  def parse(data: Data): ValidatedNel[Error, T]
-
   def load(from: String): P[Collection[Data]]
 
   def apply(from: String): P[Collection[Validated[(Data,List[Error]), T]]]
