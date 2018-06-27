@@ -9,10 +9,11 @@ import org.apache.spark.SparkContext
 import cats.data.{Reader => CReader, ValidatedNel, Validated}
 import cats.Functor
 
-import MapReader.Env
+import MapRDDReader.Env
 
-abstract class MapReader[T](implicit CT: ClassTag[T])
+abstract class MapRDDReader[T](implicit CT: ClassTag[T])
 extends RDDReader[CReader[Env, ?], T]{
+  implicit val F: Functor[CReader[Env, ?]] = implicitly
 
   type Data = T
 
@@ -25,6 +26,6 @@ extends RDDReader[CReader[Env, ?], T]{
     }
 }
 
-object MapReader{
+object MapRDDReader{
   type Env = (Map[String,Seq[_]], SparkContext)
 }

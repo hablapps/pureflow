@@ -4,4 +4,4 @@ package test
 
 import workflow.Population
 
-object ReadPopulations extends MapReader[Population]
+object ReadPopulations extends MapRDDReader[Population]

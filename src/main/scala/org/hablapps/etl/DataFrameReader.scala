@@ -9,7 +9,6 @@ import cats.data.{Const, ValidatedNel, Validated}, Validated.{Invalid, Valid}
 import cats.Functor, cats.syntax.functor._, cats.syntax.applicative._
 
 abstract class DataFrameReader[P[_]: Functor, T: ClassTag] extends Reader[Const[DataFrame,?],P,T]{
-  type Data = Row
 
   val Schema: StructType
   val ErrorSchema: StructType
@@ -27,7 +26,6 @@ abstract class DataFrameReader[P[_]: Functor, T: ClassTag] extends Reader[Const[
     apply(from) map {
       _.modify[T](filterValid)
     }
-
 
   def invalid(from: String): P[Const[DataFrame,(Data, List[Error])]] =
     apply(from) map {
