@@ -3,8 +3,8 @@ package populations
 package workflow
 
 case class Workflow[P[_]](
-  ReadCities: Reader[P,City],
-  ReadPopulations: Reader[P,Population],
+  ReadCities: RDDReader[P,City],
+  ReadPopulations: RDDReader[P,Population],
   SaveEnrichedPopulations: Writer[P,EnrichedPopulation]){
 
   import cats.Monad, cats.syntax.flatMap._, cats.syntax.applicative._, cats.syntax.functor._

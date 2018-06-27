@@ -12,7 +12,7 @@ import cats.Functor
 import MapReader.Env
 
 abstract class MapReader[T](implicit CT: ClassTag[T])
-extends Reader[CReader[Env, ?], T]{
+extends RDDReader[CReader[Env, ?], T]{
 
   type Data = T
 

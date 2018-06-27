@@ -29,4 +29,13 @@ package object etl{
       (s(s2)(s1), t)
     }
   }
+
+  // Const utilities
+
+  import cats.data.Const
+
+  implicit class ConstOps[C,T](c: Const[C,T]){
+    def modify[U](f: C => C): Const[C,U] =
+      Const(f(c.getConst)).retag[U]
+  }
 }

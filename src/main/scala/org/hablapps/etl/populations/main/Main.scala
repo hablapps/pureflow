@@ -13,9 +13,9 @@ object Main{
   // Create workflow
 
   val workflow = Workflow[Program](
-    main.ReadCities,
-    main.ReadPopulations,
-    main.SaveEnrichedPopulations)
+    ReadCities,
+    ReadPopulations,
+    SaveEnrichedPopulations)
 
   // Compile workflow
 
