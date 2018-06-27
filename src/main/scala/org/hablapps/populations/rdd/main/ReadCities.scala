@@ -9,4 +9,4 @@ import cats.data.{ Reader => CReader }
 
 import workflow.City
 
-object ReadCities extends MapReader[City]
+object ReadCities extends MapRDDReader[City]

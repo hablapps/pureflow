@@ -16,10 +16,10 @@ object ReadPopulations extends SQLReader[Population] with ValidatedHelpers{
     (getName(row.getString(0)) |@|
      getPopulation(row.getLong(1))).map(Population.apply)
 
-  def getName(name: String): ValidatedNel[Error, String] = 
+  def getName(name: String): ValidatedNel[Error, String] =
     name.unless(_ == "")(Population.EmptyName())
 
-  def getPopulation(population: Long): ValidatedNel[Error, Long] = 
+  def getPopulation(population: Long): ValidatedNel[Error, Long] =
     population.unless(_ < 0)(Population.NegativePopulation(population))
 }
 
