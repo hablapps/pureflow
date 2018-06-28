@@ -1,11 +1,6 @@
 package org.hablapps.etl
 
-import scala.reflect.ClassTag
-
-import org.apache.spark.rdd.RDD
-
-import cats.data.{ValidatedNel, Validated}, Validated.{Invalid, Valid}
-import cats.Functor, cats.syntax.functor._
+import cats.data.Validated
 
 abstract class Reader[Collection[_], P[_], T] extends java.io.Serializable{
   type Data

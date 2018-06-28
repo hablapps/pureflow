@@ -1,5 +1,7 @@
 package org.hablapps.etl
 package rdd
+package reader
+package instances
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{Row, SQLContext}
@@ -7,7 +9,7 @@ import org.apache.spark.sql.{Row, SQLContext}
 import cats.data.{Reader => CReader}
 import cats.Functor
 
-trait SQLReader[T] extends RDDReader[CReader[SQLContext,?],T]{
+trait SQLReader[T] extends Reader[CReader[SQLContext,?],T]{
 
   type Data = Row
 

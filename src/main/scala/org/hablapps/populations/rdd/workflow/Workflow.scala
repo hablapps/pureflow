@@ -1,12 +1,14 @@
 package org.hablapps
 package populations
+package rdd
 package workflow
 
-import org.hablapps.etl.rdd._
+import org.hablapps.etl.rdd.reader._
+import org.hablapps.etl.rdd.writer._
 
 case class Workflow[P[_]](
-  ReadCities: RDDReader[P,City],
-  ReadPopulations: RDDReader[P,Population],
+  ReadCities: Reader[P,City],
+  ReadPopulations: Reader[P,Population],
   SaveEnrichedPopulations: Writer[P,EnrichedPopulation]){
 
   import cats.Monad, cats.syntax.flatMap._, cats.syntax.applicative._, cats.syntax.functor._

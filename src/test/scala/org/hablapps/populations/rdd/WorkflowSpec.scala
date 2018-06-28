@@ -1,5 +1,6 @@
 package org.hablapps
 package populations
+package rdd
 package test
 
 import org.scalatest._

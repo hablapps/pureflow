@@ -1,5 +1,7 @@
 package org.hablapps.etl
 package rdd
+package reader
+package instances
 
 import scala.reflect.ClassTag
 
@@ -10,10 +12,10 @@ import org.apache.spark.SparkContext
 import cats.data.{Reader => CReader, ValidatedNel, Validated}
 import cats.Functor
 
-import MapRDDReader.Env
+import MapReader.Env
 
-abstract class MapRDDReader[T](implicit CT: ClassTag[T])
-extends RDDReader[CReader[Env, ?], T]{
+abstract class MapReader[T](implicit CT: ClassTag[T])
+extends Reader[CReader[Env, ?], T]{
   implicit val F: Functor[CReader[Env, ?]] = implicitly
 
   type Data = T
@@ -27,6 +29,6 @@ extends RDDReader[CReader[Env, ?], T]{
     }
 }
 
-object MapRDDReader{
+object MapReader{
   type Env = (Map[String,Seq[_]], SparkContext)
 }

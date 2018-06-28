@@ -9,9 +9,9 @@ import org.apache.spark.sql.functions.udf
 import cats.data.ValidatedNel
 import cats.syntax.cartesian._
 
-import org.hablapps.etl.df._
+import org.hablapps.etl.df.reader._, instances._
 
-import populations.workflow.Population, Population._
+import rdd.workflow.Population, Population._
 
 object ReadPopulations extends SQLReader[Population]{
   type Data = Row
@@ -28,7 +28,7 @@ object ReadPopulations extends SQLReader[Population]{
 
   /** Validations */
 
-  val validations: DataFrameReader.Validations = Map() +
+  val validations: Reader.Validations = Map() +
     (ErrorSchema("negativePopulation")->
       (Schema("population"), negativePopulation)) +
     (ErrorSchema("emptyName") ->

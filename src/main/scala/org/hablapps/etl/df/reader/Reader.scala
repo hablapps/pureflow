@@ -1,5 +1,7 @@
-package org.hablapps.etl
+package org.hablapps
+package etl
 package df
+package reader
 
 import scala.reflect.{classTag, ClassTag}
 
@@ -9,12 +11,13 @@ import org.apache.spark.sql._, expressions._, types._, functions._
 import cats.data.{Const, ValidatedNel, Validated}, Validated.{Invalid, Valid}
 import cats.Functor, cats.syntax.functor._, cats.syntax.applicative._
 
-abstract class DataFrameReader[P[_]: Functor, T: ClassTag] extends Reader[Const[DataFrame,?],P,T]{
+abstract class Reader[P[_]: Functor, T: ClassTag]
+extends etl.Reader[Const[DataFrame,?],P,T]{
 
   val Schema: StructType
   val ErrorSchema: StructType
 
-  val validations: DataFrameReader.Validations
+  val validations: Reader.Validations
 
   /* Reader API */
 
@@ -67,7 +70,7 @@ abstract class DataFrameReader[P[_]: Functor, T: ClassTag] extends Reader[Const[
   }
 }
 
-object DataFrameReader{
+object Reader{
 
   type Validations = Map[StructField, (StructField, UserDefinedFunction)]
 }

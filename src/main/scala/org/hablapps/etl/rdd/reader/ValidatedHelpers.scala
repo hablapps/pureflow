@@ -1,5 +1,6 @@
 package org.hablapps.etl
 package rdd
+package reader
 
 import cats.data.{ValidatedNel, Validated}, Validated.{Invalid, Valid}
 import cats.syntax.cartesian._

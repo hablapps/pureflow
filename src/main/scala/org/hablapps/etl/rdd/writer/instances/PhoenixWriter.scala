@@ -1,5 +1,7 @@
 package org.hablapps.etl
 package rdd
+package writer
+package instances
 
 import org.apache.spark.rdd.RDD
 import org.apache.hadoop.hbase.spark.HBaseContext
