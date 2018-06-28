@@ -41,7 +41,7 @@ class WorkflowSpec extends FunSpec with Matchers with SharedSparkContext{
           Population("Zamora", 1000))),
         sc)).value
 
-      resultingState("enrichedpopulations.seq").toSeq shouldBe Seq(
+      resultingState("enrichedpopulations.seq").toSeq should contain theSameElementsAs Seq(
         EnrichedPopulation("Zamora","ZA",1000),
         EnrichedPopulation("Madrid","MA",3000),
         EnrichedPopulation("Barcelona","BA",2000))
