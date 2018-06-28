@@ -8,7 +8,7 @@ import scala.reflect.ClassTag, scala.reflect.runtime.universe.TypeTag
 import org.apache.spark.sql.{DataFrame, SQLContext, Encoder}
 import org.apache.spark.sql.types.StructType
 
-import cats.data.{Const, Reader => CReader, ValidatedNel, Validated}
+import cats.data.{Reader => CReader, ValidatedNel, Validated}
 import cats.Functor
 
 import MapReader.Env
@@ -24,10 +24,10 @@ extends Reader[CReader[Env, ?], T]{
 
   val validations: Reader.Validations = Map()
 
-  def load(from: String): CReader[Env, Const[DataFrame,Data]] =
+  def load(from: String): CReader[Env, DataPhrame[Data]] =
     CReader{
       case (data, sqlContext) =>
-        sqlContext.createDataFrame(data(from).asInstanceOf[Seq[T]]).const[Data]
+        sqlContext.createDataFrame(data(from).asInstanceOf[Seq[T]])
     }
 }
 
