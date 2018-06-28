@@ -30,19 +30,6 @@ package object etl{
     }
   }
 
-  // Const utilities
-
-  import cats.data.Const
-
-  implicit class ConstOpsT[C,T](c: C){
-    def const[T] = Const[C,T](c)
-  }
-
-  implicit class ConstOps[C,T](c: Const[C,T]){
-    def modify[U](f: C => C): Const[C,U] =
-      Const(f(c.getConst)).retag[U]
-  }
-
   // Utilities for Schemas
 
   import scala.reflect.runtime.universe.TypeTag
