@@ -72,6 +72,8 @@ lazy val root = (project in file("."))
     "org.scalatest" %% "scalatest" % scalaTestVersion,
     "org.eclipse.jetty" % "jetty-util" % "9.3.11.v20160721"),
 
+    libraryDependencies += "org.typelevel" %% "cats" % "0.9.0",
+
     excludeDependencies ++= Seq(
       "asm",
       "com.amazonaws",
@@ -79,7 +81,9 @@ lazy val root = (project in file("."))
       "org.apache.mesos",
       "com.ibm.icu",
       "tomcat"
-    )
+    ),
+
+    addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3")
   )
 
 // Based on Hadoop Mini Cluster tests from Alpine's PluginSDK (Apache licensed)
