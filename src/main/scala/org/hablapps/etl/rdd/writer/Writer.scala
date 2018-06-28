@@ -1,5 +1,6 @@
 package org.hablapps.etl
 package rdd
+package writer
 
 import org.apache.spark.rdd.RDD
 

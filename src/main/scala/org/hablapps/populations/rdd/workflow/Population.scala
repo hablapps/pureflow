@@ -1,5 +1,6 @@
 package org.hablapps
 package populations
+package rdd
 package workflow
 
 case class Population(name: String, population: Long)

@@ -1,5 +1,6 @@
 package org.hablapps
 package populations
+package rdd
 package workflow
 
 import org.apache.spark.rdd.RDD

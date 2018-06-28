@@ -1,5 +1,6 @@
 package org.hablapps
 package populations
+package rdd
 package main
 
 import org.apache.spark.{SparkConf, SparkContext}
@@ -20,7 +21,8 @@ object Main{
 
   // Compile workflow
 
-  val compiledProgram = workflow.run("cities.seq", "populations.parquet", "enriched.hb")
+  val compiledProgram =
+    workflow.run("cities.seq", "populations.parquet", "enriched.hb")
 
   // Run workflow
 

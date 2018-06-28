@@ -1,5 +1,7 @@
-package org.hablapps.etl
+package org.hablapps
+package etl
 package rdd
+package reader
 
 import scala.reflect.{classTag, ClassTag}
 
@@ -8,7 +10,7 @@ import org.apache.spark.rdd.RDD
 import cats.data.{ValidatedNel, Validated}, Validated.{Invalid, Valid}
 import cats.Functor, cats.syntax.functor._
 
-abstract class RDDReader[P[_]: Functor, T: ClassTag] extends Reader[RDD,P,T]{
+abstract class Reader[P[_]: Functor, T: ClassTag] extends etl.Reader[RDD,P,T]{
 
   def parse(data: Data): ValidatedNel[Error, T]
 
@@ -25,14 +27,14 @@ abstract class RDDReader[P[_]: Functor, T: ClassTag] extends Reader[RDD,P,T]{
       _.collect{ case Invalid(error) => error })
 }
 
-object RDDReader{
+object Reader{
 
   // import cats.~>
 
   // implicit def fromP[P[_],Q[_]: Functor,T](implicit
-  //     R: RDDReader[P,T],
+  //     R: Reader[P,T],
   //     nat: P ~> Q) =
-  //   new RDDReader[Q, T]{
+  //   new Reader[Q, T]{
   //     type Data = R.Data
   //     type Error = R.Error
 
@@ -49,9 +51,9 @@ object RDDReader{
   import cats.data.{Reader => CReader}
 
   implicit def toReader[E1,E2,T: ClassTag](implicit
-      R: RDDReader[CReader[E1,?],T],
+      R: Reader[CReader[E1,?],T],
       view: E2 => E1) =
-    new RDDReader[CReader[E2,?], T]{
+    new Reader[CReader[E2,?], T]{
       type Data = R.Data
       type Error = R.Error
 
@@ -60,16 +62,16 @@ object RDDReader{
       def load(from: String) = R.load(from).local(view)
     }
 
-  implicit def toReaderView[E1,E2,T: ClassTag](R: RDDReader[CReader[E1,?],T])(implicit
+  implicit def toReaderView[E1,E2,T: ClassTag](R: Reader[CReader[E1,?],T])(implicit
       view: E2 => E1) =
     toReader(classTag[T],R,view)
 
   import cats.data.State
 
   implicit def toState[E1,E2,T: ClassTag](implicit
-      R: RDDReader[CReader[E1,?],T],
+      R: Reader[CReader[E1,?],T],
       view: E2 => E1) =
-    new RDDReader[State[E2,?], T]{
+    new Reader[State[E2,?], T]{
       type Data = R.Data
       type Error = R.Error
 
@@ -83,7 +85,7 @@ object RDDReader{
     }
 
   implicit def toStateView[E1,E2,T: ClassTag](
-      R: RDDReader[CReader[E1,?],T])(implicit
+      R: Reader[CReader[E1,?],T])(implicit
       view: E2 => E1) =
     toState(classTag[T],R,view)
 

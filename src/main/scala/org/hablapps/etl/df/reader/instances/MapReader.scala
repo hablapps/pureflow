@@ -1,5 +1,7 @@
 package org.hablapps.etl
 package df
+package reader
+package instances
 
 import scala.reflect.ClassTag, scala.reflect.runtime.universe.TypeTag
 
@@ -12,7 +14,7 @@ import cats.Functor
 import MapReader.Env
 
 class MapReader[T <: Product : TypeTag](implicit CT: ClassTag[T])
-extends DataFrameReader[CReader[Env, ?], T]{
+extends Reader[CReader[Env, ?], T]{
 
   type Data = T
   type Error = Nothing
@@ -20,7 +22,7 @@ extends DataFrameReader[CReader[Env, ?], T]{
   val Schema = product[T]
   val ErrorSchema = StructType(Nil)
 
-  val validations: DataFrameReader.Validations = Map()
+  val validations: Reader.Validations = Map()
 
   def load(from: String): CReader[Env, Const[DataFrame,Data]] =
     CReader{
