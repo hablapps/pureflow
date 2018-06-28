@@ -1,4 +1,5 @@
 package org.hablapps.etl
+package rdd
 
 import scala.reflect.ClassTag
 

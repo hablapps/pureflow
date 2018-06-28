@@ -1,4 +1,4 @@
-package org.hablapps.etl
+package org.hablapps
 package populations
 package test
 
@@ -6,6 +6,9 @@ import org.scalatest._
 import com.holdenkarau.spark.testing.SharedSparkContext
 
 import cats.data.{Reader => CReader, State}
+
+import org.hablapps.etl.rdd._
+import org.hablapps.etl._
 
 import workflow._
 

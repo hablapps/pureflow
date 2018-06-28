@@ -1,6 +1,8 @@
-package org.hablapps.etl
+package org.hablapps
 package populations
 package workflow
+
+import org.hablapps.etl.rdd._
 
 case class Workflow[P[_]](
   ReadCities: RDDReader[P,City],

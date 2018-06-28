@@ -1,4 +1,4 @@
-package org.hablapps.etl
+package org.hablapps
 package populations
 package main
 
@@ -7,6 +7,7 @@ import org.apache.hadoop.hbase.spark.HBaseContext
 import org.apache.spark.sql.SQLContext
 
 import workflow._
+import org.hablapps.etl._
 
 object Main{
 

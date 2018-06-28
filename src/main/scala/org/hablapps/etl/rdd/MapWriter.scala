@@ -1,4 +1,5 @@
 package org.hablapps.etl
+package rdd
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext

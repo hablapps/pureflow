@@ -1,4 +1,4 @@
-package org.hablapps.etl
+package org.hablapps
 package populations
 package main
 
@@ -6,6 +6,8 @@ import org.apache.spark.sql.Row
 
 import cats.data.ValidatedNel
 import cats.syntax.cartesian._
+
+import org.hablapps.etl.rdd._
 
 import workflow.Population
 

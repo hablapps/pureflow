@@ -1,4 +1,4 @@
-package org.hablapps.etl
+package org.hablapps
 package populations
 package df
 package main
@@ -9,9 +9,11 @@ import org.apache.spark.sql.functions.udf
 import cats.data.ValidatedNel
 import cats.syntax.cartesian._
 
+import org.hablapps.etl.df._
+
 import populations.workflow.Population, Population._
 
-object ReadPopulations extends SQLDFReader[Population]{
+object ReadPopulations extends SQLReader[Population]{
   type Data = Row
   type Error = Population.Error
 

@@ -1,4 +1,5 @@
 package org.hablapps.etl
+package df
 
 import scala.reflect.ClassTag, scala.reflect.runtime.universe.TypeTag
 
@@ -10,7 +11,7 @@ import cats.Functor
 
 import MapReader.Env
 
-class MapDFReader[T <: Product : TypeTag](implicit CT: ClassTag[T])
+class MapReader[T <: Product : TypeTag](implicit CT: ClassTag[T])
 extends DataFrameReader[CReader[Env, ?], T]{
 
   type Data = T
