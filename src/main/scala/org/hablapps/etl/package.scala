@@ -1,6 +1,6 @@
 package org.hablapps
 
-package object etl{
+package object etl extends TransformDefs{
 
   import org.apache.spark.sql.SQLContext
   import org.apache.spark.SparkContext

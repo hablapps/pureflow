@@ -11,7 +11,7 @@ import cats.syntax.cartesian._
 
 import org.hablapps.etl.df.reader._, instances._
 
-import rdd.workflow.Population, Population._
+import Population._
 
 object ReadPopulations extends SQLReader[Population]{
   type Data = Row
@@ -19,8 +19,8 @@ object ReadPopulations extends SQLReader[Population]{
 
   /** Schemas */
 
-  val Schema = product[Population]
-  val ErrorSchema = product[ErrorRepr]
+  val Schema = etl.df.product[Population]
+  val ErrorSchema = etl.df.product[ErrorRepr]
 
   case class ErrorRepr(
     negativePopulation: NegativePopulation,

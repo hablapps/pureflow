@@ -11,9 +11,9 @@ import org.apache.spark.sql.DataFrame
 import MapWriter.Env
 
 abstract class MapWriter[T] extends Writer[State[Env,?],T]{
-  def write(dataset: Const[DataFrame,T], destination: String): State[Env,Unit] =
+  def write(dataset: DataPhrame[T], destination: String): State[Env,Unit] =
     State{
-      map => (map + (destination -> dataset.getConst.collect), ())
+      map => (map + (destination -> dataset.collect), ())
     }
 }
 

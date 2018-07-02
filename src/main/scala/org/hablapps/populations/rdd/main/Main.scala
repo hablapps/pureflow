@@ -3,20 +3,22 @@ package populations
 package rdd
 package main
 
+import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.hadoop.hbase.spark.HBaseContext
 import org.apache.spark.sql.SQLContext
 
-import workflow._
 import org.hablapps.etl._
 
 object Main{
 
   // Create workflow
 
-  val workflow = Workflow[Program](
+  val workflow = Workflow[RDD,Program](
     ReadCities,
     ReadPopulations,
+    // EnrichPopulations[Program],
+    Transforms[Program],
     SaveEnrichedPopulations)
 
   // Compile workflow
