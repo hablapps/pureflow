@@ -13,5 +13,7 @@ extends populations.Transforms[DataPhrame,P]{
     rawP: DataPhrame[Population],
     cityAbbrev: DataPhrame[City]): P[DataPhrame[EnrichedPopulation]] =
     rawP.join(cityAbbrev, rawP("name") === cityAbbrev("name"))
+      .drop(cityAbbrev("name"))
+      .withColumnRenamed("abbrev", "shortName")
       .pure[P]
 }
