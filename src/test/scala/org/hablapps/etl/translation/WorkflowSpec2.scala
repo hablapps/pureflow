@@ -12,7 +12,9 @@ import org.hablapps.etl._
 
 import org.apache.spark.sql.{DataFrame, SQLContext, Row}
 
-import workflow._
+import lib._
+import workflows._
+import classes._
 
 case class PersonTranslated(name: String, age: Int, nameOutput: String)
 object PersonTranslated {
@@ -31,7 +33,7 @@ class WorkflowSpec2 extends FunSpec with Matchers with DataFrameSuiteBase {
   val personDFReader = new ListDFReaderState[Env, Person](_._1, _._2)
   val personLUDFReader = new ListDFReaderState[Env, PersonLU](_._1, _._3)
   val translationWriter = new ListDFWriter[Env](df => env => (env._1, env._2, env._3, df.toList(PersonTranslated.fromRow)))
-  val workflow = WorkflowDF[Program](
+  val workflow = Translate[Program](
     personDFReader,
     personLUDFReader,
     translationWriter)

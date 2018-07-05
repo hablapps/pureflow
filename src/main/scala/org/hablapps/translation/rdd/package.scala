@@ -1,8 +1,7 @@
 package org.hablapps
-package translation
 
 
-package object workflow {
+package object translation {
 
   trait Const[A] {
     type λ[α] = A

@@ -1,6 +1,6 @@
 package org.hablapps
 package translation
-package workflow
+package logic
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{Row, SQLContext, DataFrame}

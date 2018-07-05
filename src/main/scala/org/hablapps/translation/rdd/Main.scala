@@ -1,15 +1,12 @@
 package org.hablapps
 package translation
-package workflow
 
 import org.apache.spark.{SparkConf, SparkContext}
-// import org.apache.hadoop.hbase.spark.HBaseContext
 import org.apache.spark.sql.SQLContext
-//
-// import workflow._
-// import org.hablapps.etl._
-
 import cats.data.{Reader => CReader}
+import workflows.Translate
+import classes._
+import lib._
 
 object Main {
 
@@ -20,7 +17,7 @@ object Main {
 
   val parquetReader = new ParquetReader[Env](identity)
   val parquetWriter = new ParquetWriter[Env](identity)
-  val workflow = WorkflowDF[Program](
+  val workflow = Translate[Program](
     parquetReader,
     parquetReader,
     parquetWriter)
@@ -40,11 +37,4 @@ object Main {
 
   compiledProgram(sqlContext)
 
-//  val hc: HBaseContext = ???
-//  val map = Map("cities" -> Seq(
-//    City("Madrid", "MA"),
-//    City("Barcelona", "BA"),
-//    City("Zamora", "ZA")))
-//
-//  compiledProgram((map, sc, sqlContext, hc))
 }
