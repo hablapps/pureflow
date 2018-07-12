@@ -10,8 +10,6 @@ import cats.syntax.cartesian._
 
 import org.hablapps.etl.rdd._, reader._, instances._
 
-import workflow.Population
-
 object ReadPopulations extends SQLReader[Population] with ValidatedHelpers{
   type Error = Population.Error
 

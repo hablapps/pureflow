@@ -3,8 +3,6 @@ package populations
 package rdd
 package main
 
-import workflow.EnrichedPopulation
-
 import org.hablapps.etl.rdd.writer.instances._
 
 object SaveEnrichedPopulations extends PhoenixWriter[EnrichedPopulation]{

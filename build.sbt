@@ -36,7 +36,8 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       "org.apache.spark" %% "spark-core",
       "org.apache.spark" %% "spark-sql",
-      "org.apache.spark" %% "spark-streaming"
+      "org.apache.spark" %% "spark-streaming",
+      "org.apache.spark" %% "spark-hive"
     ).map(_ % sparkVersion)
       .map(_ % "compile,test" classifier "" classifier "tests"),
 

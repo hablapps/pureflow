@@ -3,6 +3,8 @@ package populations
 package rdd
 package test
 
+import org.apache.spark.rdd.RDD
+
 import org.scalatest._
 import com.holdenkarau.spark.testing.SharedSparkContext
 
@@ -11,15 +13,15 @@ import cats.data.{Reader => CReader, State}
 import org.hablapps.etl.rdd._
 import org.hablapps.etl._
 
-import workflow._
-
 class WorkflowSpec extends FunSpec with Matchers with SharedSparkContext{
 
   // CREATE WORKFLOW
 
-  val workflow = Workflow[Program](
+  val workflow = Workflow[RDD,Program](
     main.ReadCities,
     test.ReadPopulations,
+    // EnrichPopulations[Program],
+    Transforms[Program],
     test.SaveEnrichedPopulations)
 
   // COMPILE TO READER

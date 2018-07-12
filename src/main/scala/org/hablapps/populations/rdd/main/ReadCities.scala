@@ -10,6 +10,4 @@ import cats.data.{ Reader => CReader }
 
 import org.hablapps.etl.rdd.reader.instances._
 
-import workflow.City
-
 object ReadCities extends MapReader[City]

@@ -1,6 +1,6 @@
 package org.hablapps
 
-package object etl{
+package object etl extends TransformDefs{
 
   import org.apache.spark.sql.SQLContext
   import org.apache.spark.SparkContext
@@ -13,7 +13,9 @@ package object etl{
   implicit def tuple4to12[A,B,C,D]: ((A,B,C,D)) => (A,B) = t => (t._1,t._2)
   implicit def tuple4to3[A,B,C,D]: ((A,B,C,D)) => C = t => t._3
   implicit def tuple4to4[A,B,C,D]: ((A,B,C,D)) => D = t => t._4
+  
   implicit def tuple2to1[A,B]: ((A,B)) => A = t => t._1
+  implicit def tuple2to2[A,B]: ((A,B)) => B = t => t._2
 
   // State setters
 
