@@ -16,10 +16,11 @@ import lib._
 import workflows._
 import classes._
 
-case class PersonTranslated(name: String, age: Int, nameOutput: String)
+case class PersonTranslated(name: String, age: Int, ioId: String, nameOutput: Option[String])
 object PersonTranslated {
   def fromRow(row: Row): PersonTranslated = row match {
-    case Row(name: String, age: Int, nameOutput: String) => PersonTranslated(name, age, nameOutput)
+    case Row(name: String, age: Int, ioId: String, nameOutput: String) => PersonTranslated(name, age, ioId, Option(nameOutput))
+    case Row(name: String, age: Int, ioId: String, _) => PersonTranslated(name, age, ioId, Option.empty)
   }
 }
 
@@ -43,12 +44,13 @@ class WorkflowSpec2 extends FunSpec with Matchers with DataFrameSuiteBase {
   val program: Program[Unit] = workflow.run(
     "inputSrc",
     List(
-      TranslateColumnConf(
+      TranslateColumnConf2(
         inputColumn = "name",
         lookupSrc = "foo",
         lookupKeyColumn = "nameKey",
         lookupValueColumn = "nameValue",
-        outputColumn = "nameOutput")),
+        outputColumn = "nameOutput",
+        ioId = "5")),
     "outputSrc")
 
   describe("Translation") {
@@ -56,13 +58,15 @@ class WorkflowSpec2 extends FunSpec with Matchers with DataFrameSuiteBase {
       val initialState: Env = (
         sqlContext,
         List(
-          Person("Javi", 29),
-          Person("Sulis", 28),
-          Person("Lili", 43)
+          Person("Javi", 29, "5"),
+          Person("Sulis", 28, "5"),
+          Person("Tapi", 2, "555"),
+          Person("Lili", 43, "5")
         ),
         List(
           PersonLU("Javi", "Javier Fuentes", "N/A"),
           PersonLU("Sulis", "Ana Sulistrowski", "N/A"),
+          PersonLU("Tapi", "Tapioca", "N/A"),
           PersonLU("Lolo", "Lili Lolo", "N/A")
         ),
         List.empty)
@@ -70,8 +74,9 @@ class WorkflowSpec2 extends FunSpec with Matchers with DataFrameSuiteBase {
       val (_, _, _, translated) = program.runS(initialState).value
 
       translated should contain theSameElementsAs List(
-        PersonTranslated("Javi", 29, "Javier Fuentes"),
-        PersonTranslated("Sulis", 28, "Ana Sulistrowski"))
+        PersonTranslated("Javi", 29, "5", Option("Javier Fuentes")),
+        PersonTranslated("Sulis", 28, "5", Option("Ana Sulistrowski")),
+        PersonTranslated("Tapi", 2, "555", Option.empty))
     }
   }
 }

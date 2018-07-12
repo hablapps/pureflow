@@ -9,7 +9,7 @@ import org.apache.spark.sql.Row
 import org.apache.spark.sql.SQLContext
 import lib.{DFReader, DFWriter}
 import classes._
-import logic.TranslateFieldDF
+import logic.TranslateField2DF
 
 case class Translate[P[_]](
   ReadInput: DFReader[P],
@@ -18,7 +18,7 @@ case class Translate[P[_]](
 
   def run(
       inputSrc: String,
-      translateColumns: List[TranslateColumnConf],
+      translateColumns: List[TranslateColumnConf2],
       translationSrc: String)(implicit
       M: Monad[P]): P[Unit] =
     for {
@@ -28,11 +28,12 @@ case class Translate[P[_]](
           for {
             lookup <- ReadLookup.valid(tc.lookupSrc)
             acc <- accP
-          } yield new TranslateFieldDF(
+          } yield new TranslateField2DF(
             tc.inputColumn,
             tc.lookupKeyColumn,
             tc.lookupValueColumn,
-            tc.outputColumn)(acc, lookup)
+            tc.outputColumn,
+            tc.ioId)(acc, lookup)
         }
       _ <- SaveTranslation.write(translated, translationSrc)
     } yield ()

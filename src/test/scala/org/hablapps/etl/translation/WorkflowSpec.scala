@@ -16,7 +16,7 @@ import lib._
 import workflows._
 import classes._
 
-case class Person(name: String, age: Int)
+case class Person(name: String, age: Int, IO_ID: String)
 case class PersonLU(nameKey: String, nameValue: String, timestamp: String)
 
 class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase {
@@ -40,12 +40,13 @@ class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase {
   val program: Program[Unit] = workflow.run(
     "inputSrc",
     List(
-      TranslateColumnConf(
+      TranslateColumnConf2(
         inputColumn = "name",
         lookupSrc = "foo",
         lookupKeyColumn = "nameKey",
         lookupValueColumn = "nameValue",
-        outputColumn = "nameOutput")),
+        outputColumn = "nameOutput",
+        ioId = "5")),
     "outputSrc")
 
   describe("Translation") {
@@ -53,9 +54,9 @@ class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase {
       val initialState: Env = (
         sqlContext,
         List(
-          Person("Javi", 29),
-          Person("Sulis", 28),
-          Person("Lili", 43)
+          Person("Javi", 29, "5"),
+          Person("Sulis", 28, "6"),
+          Person("Lili", 43, "5")
         ),
         List(
           PersonLU("Javi", "Javier Fuentes", "N/A"),

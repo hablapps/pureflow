@@ -18,13 +18,14 @@ case class ReadConfigWorkflow[P[_]](
   ReadField: DFReader[P]){
 
   def run(
+      processId: String,
       criteriaSrc: String,
       crossSrc: String,
       fieldSrc: String)(implicit
-      M: Monad[P]): P[DataFrame] =
+      M: Monad[P]): P[List[TranslateColumnConf2]] =
     for {
       criteria <- ReadCriteria.valid(criteriaSrc)
       cross <- ReadCross.valid(crossSrc)
       field <- ReadField.valid(fieldSrc)
-    } yield ParseConf(criteria, cross, field)
+    } yield new ParseConf(processId)(criteria, cross, field)
 }

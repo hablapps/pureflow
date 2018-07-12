@@ -4,7 +4,7 @@ package translation
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.SQLContext
 import cats.data.{Reader => CReader}
-import workflows.Translate
+import workflows.{Translate, ReadConfigWorkflow}
 import classes._
 import lib._
 
@@ -13,10 +13,20 @@ object Main {
   type Env = SQLContext
   type Program[A] = CReader[Env, A]
 
-  // Create workflow
+  // Readers & Writers
 
   val parquetReader = new ParquetReader[Env](identity)
   val parquetWriter = new ParquetWriter[Env](identity)
+
+  // Create read config workflow
+
+  val readConfWF = ReadConfigWorkflow[Program](
+    parquetReader,
+    parquetReader,
+    parquetReader)
+
+  // Create translate workflow
+
   val workflow = Translate[Program](
     parquetReader,
     parquetReader,
@@ -24,10 +34,18 @@ object Main {
 
   // Compile workflow
 
-  val compiledProgram = workflow.run(
-    "inputSrc",
-    List.empty[TranslateColumnConf],
-    "outputSrc")
+  val compiledProgram =
+    for {
+      config <- readConfWF.run(
+        "processId",
+        "criteriaSrc",
+        "crossSrc",
+        "fieldSrc")
+      translated <- workflow.run(
+        "inputSrc",
+        config,
+        "outputSrc")
+    } yield translated
 
   // Run workflow
 
