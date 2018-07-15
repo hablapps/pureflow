@@ -21,19 +21,20 @@ case class PersonLU(nameKey: String, nameValue: String, timestamp: String)
 
 class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase {
 
-  type Env = (SQLContext, List[Person], List[PersonLU], DataFrame)
+  type Env = (SQLContext, List[Person], List[PersonLU], DataFrame, DataFrame)
   type Program[A] = State[Env, A]
-  // type Program[A] = CReader[Env, A]
 
   // CREATE WORKFLOW
 
   val personDFReader = new ListDFReaderState[Env, Person](_._1, _._2)
   val personLUDFReader = new ListDFReaderState[Env, PersonLU](_._1, _._3)
-  val translationWriter = new ListDFWriter[Env](df => env => (env._1, env._2, env._3, df))
+  val translationWriter = new ListDFWriter[Env](df => env => (env._1, env._2, env._3, df, env._5))
+  val discardedWriter = new ListDFWriter[Env](df => env => (env._1, env._2, env._3, env._4, df))
   val workflow = Translate[Program](
     personDFReader,
     personLUDFReader,
-    translationWriter)
+    translationWriter,
+    discardedWriter)
 
   // COMPILE TO READER
 
@@ -47,7 +48,8 @@ class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase {
         lookupValueColumn = "nameValue",
         outputColumn = "nameOutput",
         ioId = "5")),
-    "outputSrc")
+    "outputSrc",
+    "discardedSrc")
 
   describe("Translation") {
     it("should be translated") {
@@ -55,18 +57,22 @@ class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase {
         sqlContext,
         List(
           Person("Javi", 29, "5"),
-          Person("Sulis", 28, "6"),
+          Person("Sulis", 28, "5"),
+          Person("Tapi", 2, "555"),
           Person("Lili", 43, "5")
         ),
         List(
           PersonLU("Javi", "Javier Fuentes", "N/A"),
           PersonLU("Sulis", "Ana Sulistrowski", "N/A"),
+          PersonLU("Tapi", "Tapioca", "N/A"),
           PersonLU("Lolo", "Lili Lolo", "N/A")
         ),
+        sqlContext.emptyDataFrame,
         sqlContext.emptyDataFrame)
 
       val env2 = program.runS(initialState)
       env2.value._4.show(false)
+      env2.value._5.show(false)
     }
   }
 }

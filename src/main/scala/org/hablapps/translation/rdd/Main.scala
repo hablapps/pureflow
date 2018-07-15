@@ -30,6 +30,7 @@ object Main {
   val workflow = Translate[Program](
     parquetReader,
     parquetReader,
+    parquetWriter,
     parquetWriter)
 
   // Compile workflow
@@ -44,7 +45,8 @@ object Main {
       translated <- workflow.run(
         "inputSrc",
         config,
-        "outputSrc")
+        "outputSrc",
+        "discardedSrc")
     } yield translated
 
   // Run workflow

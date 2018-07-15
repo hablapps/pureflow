@@ -14,12 +14,14 @@ import logic.{TranslateField2DF, SplitTranslation}
 case class Translate[P[_]](
   ReadInput: DFReader[P],
   ReadLookup: DFReader[P],
-  SaveTranslation: DFWriter[P]){
+  SaveTranslation: DFWriter[P],
+  SaveDiscarded: DFWriter[P]){
 
   def run(
       inputSrc: String,
       translateColumns: List[TranslateColumnConf2],
-      translationSrc: String)(implicit
+      translationSrc: String,
+      discardedSrc: String)(implicit
       M: Monad[P]): P[Unit] =
     for {
       input <- ReadInput.valid(inputSrc)
@@ -37,6 +39,6 @@ case class Translate[P[_]](
         }
       translationResult <- SplitTranslation(translation, translateColumns).pure
       _ <- SaveTranslation.write(translationResult.translated, translationSrc)
-      // TODO: Save discarded to discarded path
+      _ <- SaveDiscarded.write(translationResult.discarded, discardedSrc)
     } yield ()
 }
