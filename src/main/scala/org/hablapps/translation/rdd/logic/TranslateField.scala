@@ -4,10 +4,12 @@ package logic
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{Row, SQLContext, DataFrame}
-import org.apache.spark.sql.functions.{col, lit}
+import org.apache.spark.sql.functions.{col, lit, when}
 import org.apache.spark.sql.types._
 import scala.reflect.ClassTag
 
+
+case class TranslationResult(translated: DataFrame, discarded: DataFrame)
 
 class TranslateFieldDF(
     inputColumn: String,
@@ -24,6 +26,21 @@ class TranslateFieldDF(
             col(lookupValueColumn) as outputColumn),
         List(inputColumn),
         "inner")
+
+  // With discarded registers
+  def apply2(input: DataFrame, lookup: DataFrame): DataFrame =
+    input
+      .join(
+        lookup
+          .select(
+            col(lookupKeyColumn) as inputColumn,
+            col(lookupValueColumn) as outputColumn),
+        List(inputColumn),
+        "left_outer")
+      .withColumn(
+        outputColumn,
+        when(col(outputColumn).isNull, lit("ERROR"))
+          .otherwise(col(outputColumn)))
 }
 
 class TranslateField2DF(
@@ -35,14 +52,14 @@ class TranslateField2DF(
 
   def apply(input: DataFrame, lookup: DataFrame): DataFrame = {
     input.persist()
-    val translate = new TranslateFieldDF(inputColumn, lookupKeyColumn, lookupValueColumn, outputColumn)(
+    val translated = new TranslateFieldDF(inputColumn, lookupKeyColumn, lookupValueColumn, outputColumn).apply2(
       input
         .where(col("IO_ID") === ioId),
       lookup)
-    val dontTranslate = input
+    val untranslated = input
       .where(col("IO_ID") !== ioId)
       .withColumn(outputColumn, lit(null))
     input.unpersist()
-    translate unionAll dontTranslate.select(translate.columns.map(col): _*)
+    translated unionAll untranslated.select(translated.columns.map(col): _*)
   }
 }

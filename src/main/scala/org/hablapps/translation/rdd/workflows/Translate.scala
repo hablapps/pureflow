@@ -9,7 +9,7 @@ import org.apache.spark.sql.Row
 import org.apache.spark.sql.SQLContext
 import lib.{DFReader, DFWriter}
 import classes._
-import logic.TranslateField2DF
+import logic.{TranslateField2DF, SplitTranslation}
 
 case class Translate[P[_]](
   ReadInput: DFReader[P],
@@ -23,7 +23,7 @@ case class Translate[P[_]](
       M: Monad[P]): P[Unit] =
     for {
       input <- ReadInput.valid(inputSrc)
-      translated <-
+      translation <-
         translateColumns.foldLeft(input.pure) { (accP, tc) =>
           for {
             lookup <- ReadLookup.valid(tc.lookupSrc)
@@ -35,6 +35,8 @@ case class Translate[P[_]](
             tc.outputColumn,
             tc.ioId)(acc, lookup)
         }
-      _ <- SaveTranslation.write(translated, translationSrc)
+      translationResult <- SplitTranslation(translation, translateColumns).pure
+      _ <- SaveTranslation.write(translationResult.translated, translationSrc)
+      // TODO: Save discarded to discarded path
     } yield ()
 }
