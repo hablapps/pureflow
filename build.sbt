@@ -45,6 +45,9 @@ lazy val root = (project in file("."))
     libraryDependencies += "org.apache.phoenix" % "phoenix-spark" % phoenixVersion,
     libraryDependencies += "org.apache.phoenix" % "phoenix-core" % phoenixVersion % "compile,test" classifier "" classifier "tests",
 
+    // Shapeless
+    libraryDependencies += "com.chuusai" %% "shapeless" % "2.3.2",
+
     //HBase
     libraryDependencies ++= Seq(
       "org.apache.hbase" % "hbase-common",
@@ -66,6 +69,12 @@ lazy val root = (project in file("."))
       "org.apache.hadoop" % "hadoop-yarn-server-web-proxy" % hadoopVersion % "compile,test" classifier "" classifier "tests",
       "org.apache.hadoop" % "hadoop-minicluster" % hadoopVersion % "compile,test")),
 
+    // Hablapps
+    libraryDependencies ++= Seq(
+      "org.hablapps" %% "shapelens" % "0.1-SNAPSHOT",
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+    ),
+
     // Testing
     libraryDependencies += "com.holdenkarau" %% "spark-testing-base" % holdenKarauVersion % "test" excludeAll ExclusionRule(organization = "org.apache.hadoop"),
 
@@ -74,6 +83,7 @@ lazy val root = (project in file("."))
     "org.eclipse.jetty" % "jetty-util" % "9.3.11.v20160721"),
 
     libraryDependencies += "org.typelevel" %% "cats" % "0.9.0",
+    libraryDependencies += "org.scalaz" %% "scalaz-scalacheck-binding" % "7.2.7",
 
     excludeDependencies ++= Seq(
       "asm",

@@ -14,8 +14,8 @@ object Main{
   // Create workflow
 
   val workflow = Workflow[DataPhrame,Program](
-    ReadCities,
-    ReadPopulations,
+    ReadCities.lift[Program],
+    ReadPopulations.lift[Program],
     // EnrichPopulations[Program],
     Transforms[Program],
     SaveEnrichedPopulations)
