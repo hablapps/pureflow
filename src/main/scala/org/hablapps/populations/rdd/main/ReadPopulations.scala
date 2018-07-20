@@ -23,11 +23,3 @@ object ReadPopulations extends SQLReader[Population] with ValidatedHelpers{
   def getPopulation(population: Long): ValidatedNel[Error, Long] =
     population.unless(_ < 0)(Population.NegativePopulation(population))
 }
-
-
-
-
-
-
-
-

@@ -20,8 +20,8 @@ class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase{
   object ReadPopulations extends reader.instances.MapReader[Population]
 
   val workflow = Workflow[DataPhrame,Program](
-    main.ReadCities,
-    ReadPopulations,
+    main.ReadCities.lift[Program],
+    ReadPopulations.lift[Program],
     Transforms[Program],
     main.SaveEnrichedPopulations)
 
@@ -31,9 +31,9 @@ class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase{
     "cities.seq", "populations.seq", "enrichedpopulations.seq")
 
   // RUN
-  
+
   // describe("Person dataframe"){
-  
+
   //   val personSeq = Seq(
   //     Person("pepe", 40),
   //     Person("isa", -20),
