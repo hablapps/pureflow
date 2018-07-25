@@ -9,7 +9,7 @@ import org.apache.spark.sql.Row
 import org.apache.spark.sql.SQLContext
 import lib.{DFReader, DFWriter}
 import classes._
-import logic.{TranslateField2DF, SplitTranslation}
+import logic.{TranslateField2DF, SplitTranslation, LogErrors}
 
 case class Translate[P[_]](
   ReadInput: DFReader[P],
@@ -40,5 +40,8 @@ case class Translate[P[_]](
       translationResult <- SplitTranslation(translation, translateColumns).pure
       _ <- SaveTranslation.write(translationResult.translated, translationSrc)
       _ <- SaveDiscarded.write(translationResult.discarded, discardedSrc)
+      _ <- LogErrors(translationResult.discarded, translateColumns)
+              .foreach(_.foreach(println))
+              .pure
     } yield ()
 }

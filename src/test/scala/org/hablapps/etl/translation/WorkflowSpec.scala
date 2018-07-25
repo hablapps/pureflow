@@ -16,8 +16,6 @@ import lib._
 import workflows._
 import classes._
 
-case class Person(name: String, age: Int, IO_ID: String)
-case class PersonLU(nameKey: String, nameValue: String, timestamp: String)
 
 class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase {
 

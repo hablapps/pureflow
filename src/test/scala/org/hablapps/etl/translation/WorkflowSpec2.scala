@@ -16,16 +16,10 @@ import lib._
 import workflows._
 import classes._
 
-case class PersonTranslated(name: String, age: Int, ioId: String, nameOutput: Option[String])
-object PersonTranslated {
-  def fromRow(row: Row): PersonTranslated = row match {
-    case Row(name: String, age: Int, ioId: String, nameOutput: String) => PersonTranslated(name, age, ioId, Option(nameOutput))
-    case Row(name: String, age: Int, ioId: String, _) => PersonTranslated(name, age, ioId, Option.empty)
-  }
-}
 
 class WorkflowSpec2 extends FunSpec with Matchers with DataFrameSuiteBase {
 
+  //                      INPUT         LOOKUP          TRANSLATED              DISCARDED
   type Env = (SQLContext, List[Person], List[PersonLU], List[PersonTranslated], List[PersonTranslated])
   type Program[A] = State[Env, A]
 
@@ -64,13 +58,13 @@ class WorkflowSpec2 extends FunSpec with Matchers with DataFrameSuiteBase {
           Person("Javi", 29, "5"),
           Person("Sulis", 28, "5"),
           Person("Tapi", 2, "555"),
-          Person("Lili", 43, "5")
+          Person("Pippo", 5, "5")
         ),
         List(
           PersonLU("Javi", "Javier Fuentes", "N/A"),
           PersonLU("Sulis", "Ana Sulistrowski", "N/A"),
           PersonLU("Tapi", "Tapioca", "N/A"),
-          PersonLU("Lolo", "Lili Lolo", "N/A")
+          PersonLU("Pipo", "Pipoca", "N/A")
         ),
         List.empty,
         List.empty)
@@ -83,7 +77,7 @@ class WorkflowSpec2 extends FunSpec with Matchers with DataFrameSuiteBase {
         PersonTranslated("Tapi", 2, "555", Option.empty))
 
       discarded should contain theSameElementsAs List(
-        PersonTranslated("Lili", 43, "5", Option("ERROR")))
+        PersonTranslated("Pippo", 5, "5", Option("ERROR")))
     }
   }
 }

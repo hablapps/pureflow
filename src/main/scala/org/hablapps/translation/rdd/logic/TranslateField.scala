@@ -17,15 +17,15 @@ class TranslateFieldDF(
     lookupValueColumn: String,
     outputColumn: String) {
 
-  def apply(input: DataFrame, lookup: DataFrame): DataFrame =
-    input
-      .join(
-        lookup
-          .select(
-            col(lookupKeyColumn) as inputColumn,
-            col(lookupValueColumn) as outputColumn),
-        List(inputColumn),
-        "inner")
+  // def apply(input: DataFrame, lookup: DataFrame): DataFrame =
+  //   input
+  //     .join(
+  //       lookup
+  //         .select(
+  //           col(lookupKeyColumn) as inputColumn,
+  //           col(lookupValueColumn) as outputColumn),
+  //       List(inputColumn),
+  //       "inner")
 
   // With discarded registers
   def apply2(input: DataFrame, lookup: DataFrame): DataFrame =
