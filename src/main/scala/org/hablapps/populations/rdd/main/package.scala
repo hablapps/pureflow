@@ -1,5 +1,6 @@
 package org.hablapps
 package populations
+package rdd
 
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SQLContext

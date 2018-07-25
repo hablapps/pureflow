@@ -1,5 +1,6 @@
 package org.hablapps
 package populations
+package rdd
 package main
 
 import org.apache.spark.sql.Row
@@ -7,9 +8,7 @@ import org.apache.spark.sql.Row
 import cats.data.ValidatedNel
 import cats.syntax.cartesian._
 
-import org.hablapps.etl.rdd._
-
-import workflow.Population
+import org.hablapps.etl.rdd._, reader._, instances._
 
 object ReadPopulations extends SQLReader[Population] with ValidatedHelpers{
   type Error = Population.Error
