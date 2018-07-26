@@ -12,7 +12,7 @@ import cats.data.{Reader => CReader}
 import scala.reflect.runtime.universe.TypeTag
 
 abstract class PhoenixWriter[T <: Product : TypeTag]
-extends Writer[CReader[HBaseContext,?], T]{
+extends Writer[PhoenixWriter.Program, T]{
 
   val Columns: List[String]
 
@@ -22,4 +22,8 @@ extends Writer[CReader[HBaseContext,?], T]{
         cols = Columns,
         conf = hc.config)
     }
+}
+
+object PhoenixWriter{
+  type Program[T] = CReader[HBaseContext, T]
 }

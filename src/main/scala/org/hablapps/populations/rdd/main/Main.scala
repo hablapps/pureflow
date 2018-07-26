@@ -23,7 +23,7 @@ object Main{
     ReadCities.lift[Program],
     ReadPopulations.lift[Program],
     Transforms[Program],
-    SaveEnrichedPopulations)
+    SaveEnrichedPopulations.lift[Program])
 
   // Compiled workflow
 

@@ -17,7 +17,9 @@ class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase{
 
   // CREATE WORKFLOW
 
-  object ReadPopulations extends reader.instances.MapReader[Population]
+  type Program[t] = State[(Map[String,Seq[_]], SQLContext),t]
+
+  val ReadPopulations = new reader.instances.MapReader[Population]
 
   val workflow = Workflow[DataPhrame,Program](
     main.ReadCities.lift[Program],
