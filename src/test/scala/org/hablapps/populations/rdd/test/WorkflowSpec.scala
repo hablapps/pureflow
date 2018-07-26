@@ -22,7 +22,7 @@ class WorkflowSpec extends FunSpec with Matchers with SharedSparkContext{
     test.ReadPopulations.lift[Program],
     // EnrichPopulations[Program],
     Transforms[Program],
-    test.SaveEnrichedPopulations)
+    test.SaveEnrichedPopulations.lift[Program])
 
   // COMPILE TO READER
 
