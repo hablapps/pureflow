@@ -17,8 +17,9 @@ object Main{
   type Program[t] = State[(Map[String,Seq[_]], SQLContext),t]
 
   val workflow = Workflow[DataPhrame,Program](
-    ReadCities.lift[Program],
-    ReadPopulations.lift[Program],
+    // ReadCities.lift[Program],
+    ReadCities[Program],
+    ReadPopulations[Program],
     // EnrichPopulations[Program],
     Transforms[Program],
     SaveEnrichedPopulations)

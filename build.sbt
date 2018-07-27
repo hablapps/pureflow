@@ -14,6 +14,8 @@ lazy val root = (project in file("."))
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "2.10.6",
 
+    partialUnificationModule := "com.milessabin" % "si2712fix-plugin" % "1.2.0",
+
     parallelExecution in Test := false,
 
     javaOptions ++= Seq("-Xms2G", "-Xmx2G", "-XX:MaxPermSize=2048M", "-XX:+CMSClassUnloadingEnabled"),
@@ -68,7 +70,7 @@ lazy val root = (project in file("."))
 
     // Hablapps
     libraryDependencies ++= Seq(
-      "org.hablapps" %% "shapelens" % "0.1-SNAPSHOT",
+      "org.hablapps" %% "naturally" % "0.1-SNAPSHOT",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
     ),
 

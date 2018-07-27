@@ -6,11 +6,11 @@ package test
 import org.scalatest._
 import com.holdenkarau.spark.testing.DataFrameSuiteBase
 
-import cats.data.{Reader => CReader, State}
+import cats.data.State, cats.MonadReader
 
 import org.apache.spark.sql.SQLContext
 
-import org.hablapps.etl.df._
+import org.hablapps.etl.df._, reader.instances.MapReader
 import org.hablapps.etl._
 
 class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase{
@@ -19,11 +19,12 @@ class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase{
 
   type Program[t] = State[(Map[String,Seq[_]], SQLContext),t]
 
-  val ReadPopulations = new reader.instances.MapReader[Population]
+  case class ReadPopulations[P[_]: MonadReader[?[_], MapReader.Env]]
+  extends reader.instances.MapReader[P, Population]
 
   val workflow = Workflow[DataPhrame,Program](
-    main.ReadCities.lift[Program],
-    ReadPopulations.lift[Program],
+    main.ReadCities[Program],
+    ReadPopulations[Program],
     Transforms[Program],
     main.SaveEnrichedPopulations)
 

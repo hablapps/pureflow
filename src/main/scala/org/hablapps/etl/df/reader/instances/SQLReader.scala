@@ -3,16 +3,17 @@ package df
 package reader
 package instances
 
+import scala.reflect.ClassTag
+
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 
-import cats.data.{Reader => CReader}
+import cats.MonadReader, cats.syntax.functor._
 
-abstract class SQLReader[T: scala.reflect.ClassTag] extends Reader[SQLReader.Program, T]{
+abstract class SQLReader[
+  P[_]: MonadReader[?[_], SQLContext],
+  T: ClassTag]
+extends Reader[P, T]{
 
-  def load(from: String): SQLReader.Program[DataPhrame[Data]] =
-    CReader(_.read.load(from))
-}
-
-object SQLReader{
-  type Program[T] = CReader[SQLContext, T]
+  def load(from: String): P[DataPhrame[Data]] =
+    MonadReader[P, SQLContext].ask map{ _.read.load(from) }
 }
