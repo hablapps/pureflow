@@ -6,8 +6,8 @@ package main
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
-import cats.data.{ Reader => CReader }
+import cats.MonadReader
 
 import org.hablapps.etl.rdd.reader.instances._
 
-object ReadCities extends MapReader[City]
+case class ReadCities[P[_]: MonadReader[?[_], MapReader.Env]] extends MapReader[P, City]

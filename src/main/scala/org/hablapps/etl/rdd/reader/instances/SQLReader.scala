@@ -6,17 +6,18 @@ package instances
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{Row, SQLContext}
 
-import cats.data.{Reader => CReader}
+import cats.MonadReader, cats.syntax.functor._
 import cats.Functor
 
-abstract class SQLReader[T: scala.reflect.ClassTag] extends Reader[SQLReader.SQLContextReader, T]{
+abstract class SQLReader[
+  P[_]: MonadReader[?[_], SQLContext],
+  T: scala.reflect.ClassTag
+] extends Reader[P, T]{
 
   type Data = Row
 
-  def load(from: String): CReader[SQLContext, RDD[Data]] =
-    CReader( _.read.load(from).rdd )
-}
-
-object SQLReader{
-  type SQLContextReader[T] = CReader[SQLContext, T]
+  def load(from: String): P[RDD[Data]] =
+    MonadReader[P, SQLContext].ask map {
+      _.read.load(from).rdd
+    }
 }

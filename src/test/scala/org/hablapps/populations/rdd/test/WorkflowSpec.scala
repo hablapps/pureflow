@@ -18,8 +18,8 @@ class WorkflowSpec extends FunSpec with Matchers with SharedSparkContext{
   // CREATE WORKFLOW
 
   val workflow = Workflow[RDD,Program](
-    main.ReadCities.lift[Program],
-    test.ReadPopulations.lift[Program],
+    main.ReadCities[Program],
+    test.ReadPopulations[Program],
     // EnrichPopulations[Program],
     Transforms[Program],
     test.SaveEnrichedPopulations.lift[Program])
