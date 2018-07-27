@@ -21,7 +21,7 @@ extends Reader[MapReader.Program, T]{
 
   val validations: Reader.Validations = Map()
 
-  def load(from: String): CReader[MapReader.Env, DataPhrame[Data]] =
+  def load(from: String): MapReader.Program[DataPhrame[Data]] =
     CReader{
       case (data, sqlContext) =>
         sqlContext.createDataFrame(data(from).asInstanceOf[Seq[T]])
