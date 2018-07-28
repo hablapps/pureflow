@@ -28,7 +28,7 @@ class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase {
   val personLUDFReader = new ListDFReaderState[Env, PersonLU](_._1, _._3)
   val translationWriter = new ListDFWriter[Env](df => env => (env._1, env._2, env._3, df, env._5))
   val discardedWriter = new ListDFWriter[Env](df => env => (env._1, env._2, env._3, env._4, df))
-  val workflow = Translate[Program](
+  val workflow = Translate[Program, Person, PersonLU](
     personDFReader,
     personLUDFReader,
     translationWriter,

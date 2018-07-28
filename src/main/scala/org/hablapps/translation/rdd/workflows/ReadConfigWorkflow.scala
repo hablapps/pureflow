@@ -12,10 +12,12 @@ import classes._
 import logic.ParseConf
 import lib._
 
+import org.hablapps.etl.df.reader.Reader
+
 case class ReadConfigWorkflow[P[_]](
-  ReadCriteria: DFReader[P],
-  ReadCross: DFReader[P],
-  ReadField: DFReader[P]){
+  ReadCriteria: Reader[P, TranslationCriteria],
+  ReadCross: Reader[P, TranslationCross],
+  ReadField: Reader[P, TranslationField]){
 
   def run(
       processId: String,

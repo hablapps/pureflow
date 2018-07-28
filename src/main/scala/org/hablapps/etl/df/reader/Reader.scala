@@ -11,17 +11,17 @@ import org.apache.spark.sql._, expressions._, types._, functions._
 import cats.data.{ValidatedNel, Validated}
 import cats.Functor, cats.syntax.functor._
 
-abstract class Reader[P[_]: Functor, T: ClassTag]
-extends etl.Reader[DataPhrame,P,T]{
+abstract class Reader[P[_]: Functor, T]
+extends etl.Reader[DataPhrame, P, T]{
 
-  val Schema: StructType
+  // val Schema: StructType // TODO(jfuentes): This is not used anywhere. Rethink about it.
   val ErrorSchema: StructType
 
   val validations: Reader.Validations
 
   /* Reader API */
 
-  def apply(from: String): P[DataPhrame[Validated[(Data,List[Error]), T]]] =
+  def apply(from: String): P[DataPhrame[Validated[(Data, List[Error]), T]]] =
     load(from) map validate
 
   def valid(from: String): P[DataPhrame[T]] =

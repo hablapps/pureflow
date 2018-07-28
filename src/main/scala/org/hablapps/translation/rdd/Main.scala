@@ -3,10 +3,16 @@ package translation
 
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.types._
 import cats.data.{Reader => CReader}
 import workflows.{Translate, ReadConfigWorkflow}
 import classes._
 import lib._
+
+import org.hablapps.etl.df.reader.Reader
+import org.hablapps.etl.df.reader.instances.SQLReader
+
+import readers._
 
 object Main {
 
@@ -14,22 +20,20 @@ object Main {
   type Program[A] = CReader[Env, A]
 
   // Readers & Writers
-
-  val parquetReader = new ParquetReader[Env](identity)
   val parquetWriter = new ParquetWriter[Env](identity)
 
   // Create read config workflow
 
   val readConfWF = ReadConfigWorkflow[Program](
-    parquetReader,
-    parquetReader,
-    parquetReader)
+    CriteriaReader,
+    CrossReader,
+    FieldReader)
 
   // Create translate workflow
 
-  val workflow = Translate[Program](
-    parquetReader,
-    parquetReader,
+  val workflow = Translate[Program, Any, Any](
+    InputReader,
+    InputReader,
     parquetWriter,
     parquetWriter)
 

@@ -7,13 +7,15 @@ import cats.data.{Reader => ReaderC}
 import org.hablapps.etl.rdd._
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.SQLContext
-import lib.{DFReader, DFWriter}
+import lib.DFWriter
 import classes._
 import logic.{TranslateField2DF, SplitTranslation, LogErrors}
 
-case class Translate[P[_]](
-  ReadInput: DFReader[P],
-  ReadLookup: DFReader[P],
+import org.hablapps.etl.df.reader.Reader
+
+case class Translate[P[_], Input, Lookup](
+  ReadInput: Reader[P, Input],
+  ReadLookup: Reader[P, Lookup],
   SaveTranslation: DFWriter[P],
   SaveDiscarded: DFWriter[P]){
 
