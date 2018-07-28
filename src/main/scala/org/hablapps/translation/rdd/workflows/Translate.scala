@@ -7,17 +7,17 @@ import cats.data.{Reader => ReaderC}
 import org.hablapps.etl.rdd._
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.SQLContext
-import lib.DFWriter
 import classes._
 import logic.{TranslateField2DF, SplitTranslation, LogErrors}
 
 import org.hablapps.etl.df.reader.Reader
+import org.hablapps.etl.df.writer.Writer
 
 case class Translate[P[_], Input, Lookup](
   ReadInput: Reader[P, Input],
   ReadLookup: Reader[P, Lookup],
-  SaveTranslation: DFWriter[P],
-  SaveDiscarded: DFWriter[P]){
+  SaveTranslation: Writer[P, Any], // TODO(jfuentes): Input + Translation
+  SaveDiscarded: Writer[P, Any]){ // TODO(jfuentes): Input + Translation Errors
 
   def run(
       inputSrc: String,

@@ -11,6 +11,8 @@ import lib._
 
 import org.hablapps.etl.df.reader.Reader
 import org.hablapps.etl.df.reader.instances.SQLReader
+import org.hablapps.etl.Writer
+import org.hablapps.etl.df.DataPhrame
 
 import readers._
 
@@ -19,8 +21,8 @@ object Main {
   type Env = SQLContext
   type Program[A] = CReader[Env, A]
 
-  // Readers & Writers
-  val parquetWriter = new ParquetWriter[Env](identity)
+  // ParquetWriter
+  val parquetWriter = new ParquetWriter[Env]
 
   // Create read config workflow
 
