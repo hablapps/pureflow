@@ -13,7 +13,9 @@ import org.hablapps.etl.df.reader._, instances._
 
 import Population._
 
-case class ReadPopulations[P[_]: MonadReader[?[_], SQLContext]] extends SQLReader[P, Population]{
+case class ReadPopulations[P[_]: MonadReader[?[_], SQLContext]]
+extends SQLReader[P, Population]{
+
   type Data = Row
   type Error = Population.Error
 
