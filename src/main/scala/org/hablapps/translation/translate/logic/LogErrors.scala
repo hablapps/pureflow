@@ -1,11 +1,12 @@
 package org.hablapps
 package translation
+package translate
 package logic
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, Row}
 import org.apache.spark.sql.functions.col
-import classes.TranslateColumnConf2
+import readConfig.classes.TranslateColumnConf2
 
 object LogErrors {
 

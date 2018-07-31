@@ -1,9 +1,10 @@
 package org.hablapps
 package translation
+package test
 
 import org.apache.spark.sql.{Row, DataFrame}
 
-package object test {
+package object translate {
 
   case class Person(name: String, age: Int, IO_ID: String)
 

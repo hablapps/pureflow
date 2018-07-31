@@ -1,10 +1,11 @@
 package org.hablapps
 package translation
+package translate
 package logic
 
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.{col, lit, not}
-import classes.TranslateColumnConf2
+import readConfig.classes.TranslateColumnConf2
 
 object SplitTranslation {
 

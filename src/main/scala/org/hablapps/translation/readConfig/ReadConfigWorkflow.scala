@@ -1,6 +1,6 @@
 package org.hablapps
 package translation
-package workflows
+package readConfig
 
 import cats.Monad, cats.syntax.all._
 import cats.data.{Reader => ReaderC}

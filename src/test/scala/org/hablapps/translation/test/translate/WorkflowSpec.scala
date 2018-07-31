@@ -1,6 +1,7 @@
 package org.hablapps
 package translation
 package test
+package translate
 
 import org.scalatest._
 import com.holdenkarau.spark.testing.DataFrameSuiteBase
@@ -13,8 +14,8 @@ import org.hablapps.etl._
 import org.apache.spark.sql.{DataFrame, SQLContext}
 
 import lib._
-import workflows._
-import classes._
+import translation.translate.Translate
+import readConfig.classes.TranslateColumnConf2
 
 
 class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase {

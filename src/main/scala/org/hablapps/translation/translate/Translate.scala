@@ -1,13 +1,13 @@
 package org.hablapps
 package translation
-package workflows
+package translate
 
 import cats.Monad, cats.syntax.all._
 import cats.data.{Reader => ReaderC}
 import org.hablapps.etl.rdd._
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.SQLContext
-import classes._
+import readConfig.classes.TranslateColumnConf2
 import logic.{TranslateField2DF, SplitTranslation, LogErrors}
 
 import org.hablapps.etl.df.reader.Reader

@@ -1,5 +1,6 @@
 package org.hablapps
 package translation
+package readConfig
 package logic
 
 import org.apache.spark.rdd.RDD

@@ -1,5 +1,6 @@
 package org.hablapps
 package translation
+package readConfig
 package classes
 
 import org.apache.spark.sql.Row

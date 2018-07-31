@@ -5,16 +5,17 @@ import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.types._
 import cats.data.{Reader => CReader}
-import workflows.{Translate, ReadConfigWorkflow}
-import classes._
+import readConfig.ReadConfigWorkflow
+import readConfig.classes._
+import readConfig.readers._
+import translate.Translate
+import translate.readers._
 import lib._
 
 import org.hablapps.etl.df.reader.Reader
 import org.hablapps.etl.df.reader.instances.SQLReader
 import org.hablapps.etl.Writer
 import org.hablapps.etl.df.DataPhrame
-
-import readers._
 
 object Main {
 
