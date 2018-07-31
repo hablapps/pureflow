@@ -3,22 +3,26 @@ package populations
 package df
 package main
 
+import cats.data.State
 
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.SQLContext
 
 import org.hablapps.etl._, df._
+import naturally.mtl._
 
 object Main{
 
   // Create workflow
 
+  type Program[t] = State[(Map[String,Seq[_]], SQLContext),t]
+
   val workflow = Workflow[DataPhrame,Program](
-    ReadCities,
-    ReadPopulations,
+    ReadCities[Program],
+    ReadPopulations[Program],
     // EnrichPopulations[Program],
     Transforms[Program],
-    SaveEnrichedPopulations)
+    SaveEnrichedPopulations[Program])
 
   // Compile workflow
 

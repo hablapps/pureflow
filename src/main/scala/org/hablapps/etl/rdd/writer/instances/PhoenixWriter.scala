@@ -7,17 +7,19 @@ import org.apache.spark.rdd.RDD
 import org.apache.hadoop.hbase.spark.HBaseContext
 import org.apache.phoenix.spark._
 
-import cats.data.{Reader => CReader}
+import cats.MonadReader, cats.syntax.functor._
 
 import scala.reflect.runtime.universe.TypeTag
 
-abstract class PhoenixWriter[T <: Product : TypeTag]
-extends Writer[CReader[HBaseContext,?], T]{
+abstract class PhoenixWriter[
+  P[_]: MonadReader[?[_], HBaseContext],
+  T <: Product : TypeTag]
+extends Writer[P, T]{
 
   val Columns: List[String]
 
-  def write(rdd: RDD[T], destination: String): CReader[HBaseContext,Unit] =
-    CReader{ implicit hc =>
+  def write(rdd: RDD[T], destination: String): P[Unit] =
+    MonadReader[P, HBaseContext].ask map { implicit hc =>
       rdd.saveToPhoenix(tableName = destination,
         cols = Columns,
         conf = hc.config)

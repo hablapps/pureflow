@@ -9,23 +9,23 @@ import org.apache.spark.sql.{DataFrame, SQLContext, Encoder}
 import org.apache.spark.sql.types.StructType
 
 import cats.data.{Reader => CReader, ValidatedNel, Validated}
-import cats.Functor
+import cats.{MonadReader, Functor}
+import cats.syntax.functor._
 
-import MapReader.Env
-
-class MapReader[T <: Product : TypeTag](implicit CT: ClassTag[T])
-extends Reader[CReader[Env, ?], T]{
+abstract class MapReader[
+  P[_]: MonadReader[?[_], MapReader.Env],
+  T <: Product : TypeTag: ClassTag]
+extends Reader[P, T]{
 
   type Data = T
-  type Error = Nothing
 
   val Schema = product[T]
   val ErrorSchema = StructType(Nil)
 
   val validations: Reader.Validations = Map()
 
-  def load(from: String): CReader[Env, DataPhrame[Data]] =
-    CReader{
+  def load(from: String): P[DataPhrame[Data]] =
+    MonadReader[P, MapReader.Env].ask map {
       case (data, sqlContext) =>
         sqlContext.createDataFrame(data(from).asInstanceOf[Seq[T]])
     }
@@ -33,4 +33,5 @@ extends Reader[CReader[Env, ?], T]{
 
 object MapReader{
   type Env = (Map[String,Seq[_]], SQLContext)
+  // type Program[T] = CReader[Env, T]
 }

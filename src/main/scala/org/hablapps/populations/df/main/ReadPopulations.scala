@@ -3,17 +3,19 @@ package populations
 package df
 package main
 
-import org.apache.spark.sql.Row
+import org.apache.spark.sql.{SQLContext, Row}
 import org.apache.spark.sql.functions.udf
 
-import cats.data.ValidatedNel
+import cats.MonadReader, cats.data.ValidatedNel
 import cats.syntax.cartesian._
 
 import org.hablapps.etl.df.reader._, instances._
 
 import Population._
 
-object ReadPopulations extends SQLReader[Population]{
+case class ReadPopulations[P[_]: MonadReader[?[_], SQLContext]]
+extends SQLReader[P, Population]{
+
   type Data = Row
   type Error = Population.Error
 

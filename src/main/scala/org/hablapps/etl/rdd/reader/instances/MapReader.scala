@@ -9,22 +9,23 @@ import org.apache.spark.rdd.RDD
 
 import org.apache.spark.SparkContext
 
-import cats.data.{Reader => CReader, ValidatedNel, Validated}
-import cats.Functor
+import cats.{MonadReader, Functor}, cats.syntax.functor._
+import cats.data.{ValidatedNel, Validated}
 
-import MapReader.Env
+import MapReader._
 
-abstract class MapReader[T](implicit CT: ClassTag[T])
-extends Reader[CReader[Env, ?], T]{
-  implicit val F: Functor[CReader[Env, ?]] = implicitly
+class MapReader[
+  P[_]: MonadReader[?[_], MapReader.Env],
+  T: ClassTag
+] extends Reader[P, T]{
 
   type Data = T
 
   def parse(data: Data): ValidatedNel[Error, T] =
     Validated.valid(data)
 
-  def load(from: String): CReader[Env, RDD[Data]] =
-    CReader{
+  def load(from: String): P[RDD[Data]] =
+    MonadReader[P, MapReader.Env].ask map {
       case (data, sc) => sc.parallelize(data(from).asInstanceOf[Seq[T]])
     }
 }

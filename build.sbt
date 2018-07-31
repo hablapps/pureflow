@@ -14,6 +14,8 @@ lazy val root = (project in file("."))
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "2.10.6",
 
+    partialUnificationModule := "com.milessabin" % "si2712fix-plugin" % "1.2.0",
+
     parallelExecution in Test := false,
 
     javaOptions ++= Seq("-Xms2G", "-Xmx2G", "-XX:MaxPermSize=2048M", "-XX:+CMSClassUnloadingEnabled"),
@@ -65,6 +67,12 @@ lazy val root = (project in file("."))
       "org.apache.hadoop" % "hadoop-yarn-server-tests" % hadoopVersion % "compile,test" classifier "" classifier "tests",
       "org.apache.hadoop" % "hadoop-yarn-server-web-proxy" % hadoopVersion % "compile,test" classifier "" classifier "tests",
       "org.apache.hadoop" % "hadoop-minicluster" % hadoopVersion % "compile,test")),
+
+    // Hablapps
+    libraryDependencies ++= Seq(
+      "org.hablapps" %% "naturally" % "0.1-SNAPSHOT",
+      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+    ),
 
     // Testing
     libraryDependencies += "com.holdenkarau" %% "spark-testing-base" % holdenKarauVersion % "test" excludeAll ExclusionRule(organization = "org.apache.hadoop"),

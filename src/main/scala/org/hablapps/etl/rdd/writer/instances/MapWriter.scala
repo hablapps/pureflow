@@ -6,13 +6,15 @@ package instances
 import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext
 
-import cats.data.State
+import cats.MonadState, cats.syntax.functor._
 import MapWriter.Env
 
-abstract class MapWriter[T] extends Writer[State[Env,?],T]{
-  def write(dataset: RDD[T], destination: String): State[Env,Unit] =
-    State{
-      map => (map + (destination -> dataset.collect), ())
+class MapWriter[P[_]: MonadState[?[_], Env], T]
+extends Writer[P, T]{
+
+  def write(dataset: RDD[T], destination: String): P[Unit] =
+    MonadState[P, Env].modify {
+      _ + (destination -> dataset.collect)
     }
 }
 

@@ -8,25 +8,30 @@ import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.hadoop.hbase.spark.HBaseContext
 import org.apache.spark.sql.SQLContext
 
+import cats.data.{Reader => CReader}
+
 import org.hablapps.etl._
+import naturally.mtl._
 
 object Main{
 
   // Create workflow
 
+  type Program[t] =
+    CReader[(Map[String,Seq[_]], SparkContext, SQLContext, HBaseContext),t]
+
   val workflow = Workflow[RDD,Program](
-    ReadCities,
-    ReadPopulations,
-    // EnrichPopulations[Program],
+    ReadCities[Program],
+    ReadPopulations[Program],
     Transforms[Program],
-    SaveEnrichedPopulations)
+    SaveEnrichedPopulations[Program])
 
-  // Compile workflow
+  // Compiled workflow
 
-  val compiledProgram =
+  val compiledProgram: Program[Unit] =
     workflow.run("cities.seq", "populations.parquet", "enriched.hb")
 
-  // Run workflow
+  // Run compiled workflow
 
   val cfg = new SparkConf().setAppName("pipelines")
   val sc = SparkContext.getOrCreate(cfg)

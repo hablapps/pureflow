@@ -6,24 +6,28 @@ package test
 import org.scalatest._
 import com.holdenkarau.spark.testing.DataFrameSuiteBase
 
-import cats.data.{Reader => CReader, State}
+import cats.data.State, cats.MonadReader
 
 import org.apache.spark.sql.SQLContext
 
-import org.hablapps.etl.df._
+import org.hablapps.etl.df._, reader.instances.MapReader
 import org.hablapps.etl._
+import naturally.mtl._
 
 class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase{
 
   // CREATE WORKFLOW
 
-  object ReadPopulations extends reader.instances.MapReader[Population]
+  type Program[t] = State[(Map[String,Seq[_]], SQLContext),t]
+
+  case class ReadPopulations[P[_]: MonadReader[?[_], MapReader.Env]]
+  extends reader.instances.MapReader[P, Population]
 
   val workflow = Workflow[DataPhrame,Program](
-    main.ReadCities,
-    ReadPopulations,
+    main.ReadCities[Program],
+    ReadPopulations[Program],
     Transforms[Program],
-    main.SaveEnrichedPopulations)
+    main.SaveEnrichedPopulations[Program])
 
   // COMPILE TO READER
 
@@ -31,9 +35,9 @@ class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase{
     "cities.seq", "populations.seq", "enrichedpopulations.seq")
 
   // RUN
-  
+
   // describe("Person dataframe"){
-  
+
   //   val personSeq = Seq(
   //     Person("pepe", 40),
   //     Person("isa", -20),
