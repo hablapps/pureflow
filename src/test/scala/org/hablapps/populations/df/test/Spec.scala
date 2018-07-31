@@ -12,6 +12,7 @@ import org.apache.spark.sql.SQLContext
 
 import org.hablapps.etl.df._, reader.instances.MapReader
 import org.hablapps.etl._
+import naturally.mtl._
 
 class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase{
 
@@ -26,7 +27,7 @@ class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase{
     main.ReadCities[Program],
     ReadPopulations[Program],
     Transforms[Program],
-    main.SaveEnrichedPopulations)
+    main.SaveEnrichedPopulations[Program])
 
   // COMPILE TO READER
 

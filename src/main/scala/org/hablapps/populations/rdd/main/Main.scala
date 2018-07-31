@@ -11,6 +11,7 @@ import org.apache.spark.sql.SQLContext
 import cats.data.{Reader => CReader}
 
 import org.hablapps.etl._
+import naturally.mtl._
 
 object Main{
 
@@ -23,7 +24,7 @@ object Main{
     ReadCities[Program],
     ReadPopulations[Program],
     Transforms[Program],
-    SaveEnrichedPopulations.lift[Program])
+    SaveEnrichedPopulations[Program])
 
   // Compiled workflow
 

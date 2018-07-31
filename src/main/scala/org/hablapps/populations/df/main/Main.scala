@@ -9,6 +9,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.SQLContext
 
 import org.hablapps.etl._, df._
+import naturally.mtl._
 
 object Main{
 
@@ -17,12 +18,11 @@ object Main{
   type Program[t] = State[(Map[String,Seq[_]], SQLContext),t]
 
   val workflow = Workflow[DataPhrame,Program](
-    // ReadCities.lift[Program],
     ReadCities[Program],
     ReadPopulations[Program],
     // EnrichPopulations[Program],
     Transforms[Program],
-    SaveEnrichedPopulations)
+    SaveEnrichedPopulations[Program])
 
   // Compile workflow
 

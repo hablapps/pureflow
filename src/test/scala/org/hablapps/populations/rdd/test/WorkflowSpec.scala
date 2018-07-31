@@ -13,16 +13,18 @@ import cats.data.{Reader => CReader, State}
 import org.hablapps.etl.rdd._
 import org.hablapps.etl._
 
+import naturally.mtl._
+
 class WorkflowSpec extends FunSpec with Matchers with SharedSparkContext{
 
   // CREATE WORKFLOW
 
   val workflow = Workflow[RDD,Program](
     main.ReadCities[Program],
-    test.ReadPopulations[Program],
+    ReadPopulations[Program],
     // EnrichPopulations[Program],
     Transforms[Program],
-    test.SaveEnrichedPopulations.lift[Program])
+    SaveEnrichedPopulations[Program])
 
   // COMPILE TO READER
 
