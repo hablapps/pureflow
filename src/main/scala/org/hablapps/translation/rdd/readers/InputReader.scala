@@ -8,11 +8,14 @@ import org.apache.spark.sql.UserDefinedFunction
 import org.hablapps.etl.df.reader.Reader
 import org.hablapps.etl.df.reader.instances.SQLReader
 
-object InputReader extends SQLReader[Any] {
+import cats.MonadReader
+import org.apache.spark.sql.SQLContext
+
+class InputReader[P[_]: MonadReader[?[_], SQLContext]] extends SQLReader[P, Any] {
 
   val ErrorSchema: StructType = StructType(List.empty)
 
-  val Schema: StructType = StructType(List.empty)
+  // val Schema: StructType = StructType(List.empty)
 
   val validations: Reader.Validations = Map.empty[StructField, (StructField, UserDefinedFunction)]
 }

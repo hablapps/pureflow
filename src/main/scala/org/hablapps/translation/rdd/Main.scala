@@ -23,19 +23,20 @@ object Main {
 
   // ParquetWriter
   val parquetWriter = new ParquetWriter[Env]
+  val inputReader = new InputReader[Program]
 
   // Create read config workflow
 
   val readConfWF = ReadConfigWorkflow[Program](
-    CriteriaReader,
-    CrossReader,
-    FieldReader)
+    new CriteriaReader[Program],
+    new CrossReader[Program],
+    new FieldReader[Program])
 
   // Create translate workflow
 
   val workflow = Translate[Program, Any, Any](
-    InputReader,
-    InputReader,
+    inputReader,
+    inputReader,
     parquetWriter,
     parquetWriter)
 
