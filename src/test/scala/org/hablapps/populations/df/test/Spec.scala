@@ -23,7 +23,7 @@ class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase{
   case class ReadPopulations[P[_]: MonadReader[?[_], MapReader.Env]]
   extends reader.instances.MapReader[P, Population]
 
-  val workflow = Workflow[DataPhrame,Program](
+  val workflow = Workflow[DataPhrame,Program,String,String](
     main.ReadCities[Program],
     ReadPopulations[Program],
     Transforms[Program],

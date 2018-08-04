@@ -18,7 +18,8 @@ extends Writer[P, T]{
 
   val Columns: List[String]
 
-  def write(rdd: RDD[T], destination: String): P[Unit] =
+  type K = String
+  def write(rdd: RDD[T], destination: K): P[Unit] =
     MonadReader[P, HBaseContext].ask map { implicit hc =>
       rdd.saveToPhoenix(tableName = destination,
         cols = Columns,

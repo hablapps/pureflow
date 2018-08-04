@@ -11,8 +11,9 @@ import MapWriter.Env
 
 class MapWriter[P[_]: MonadState[?[_], Env], T]
 extends Writer[P, T]{
+  type K = String
 
-  def write(dataset: RDD[T], destination: String): P[Unit] =
+  def write(dataset: RDD[T], destination: K): P[Unit] =
     MonadState[P, Env].modify {
       _ + (destination -> dataset.collect)
     }

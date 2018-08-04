@@ -20,11 +20,12 @@ class MapReader[
 ] extends Reader[P, T]{
 
   type Data = T
+  type S = String
 
   def parse(data: Data): ValidatedNel[Error, T] =
     Validated.valid(data)
 
-  def load(from: String): P[RDD[Data]] =
+  def load(from: S): P[RDD[Data]] =
     MonadReader[P, MapReader.Env].ask map {
       case (data, sc) => sc.parallelize(data(from).asInstanceOf[Seq[T]])
     }

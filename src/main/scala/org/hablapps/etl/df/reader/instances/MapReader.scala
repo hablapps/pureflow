@@ -18,13 +18,14 @@ abstract class MapReader[
 extends Reader[P, T]{
 
   type Data = T
+  type S = String
 
   val Schema = product[T]
   val ErrorSchema = StructType(Nil)
 
   val validations: Reader.Validations = Map()
 
-  def load(from: String): P[DataPhrame[Data]] =
+  def load(from: S): P[DataPhrame[Data]] =
     MonadReader[P, MapReader.Env].ask map {
       case (data, sqlContext) =>
         sqlContext.createDataFrame(data(from).asInstanceOf[Seq[T]])
