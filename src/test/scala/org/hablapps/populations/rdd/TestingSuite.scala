@@ -1,21 +1,16 @@
-package es.hablapps.etl
+package org.hablapps.populations.rdd
 
 import java.sql.{Connection, DriverManager, Statement}
 
-import com.holdenkarau.spark.testing.SharedSparkContext
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.spark.HBaseContext
 import org.apache.hadoop.hbase.{HBaseTestingUtility, HConstants}
 import org.apache.phoenix.end2end.BaseHBaseManagedTimeIT
 import org.apache.phoenix.query.BaseTest
-import org.apache.spark.sql.SQLContext
 import org.junit.rules.TemporaryFolder
-import org.scalatest.{FlatSpec, Matchers, Suite}
 
-trait TestingSuite extends FlatSpec with Matchers with SharedSparkContext  {
-  self: Suite =>
+trait TestingSuite extends SqlContextProvider  {
 
-  lazy val sqlContext: SQLContext = new SQLContext(sc)
   lazy val hc: HBaseContext = new HBaseContext(sc, hbaseConfiguration)
 
   lazy val hbaseConfiguration: Configuration = {

@@ -20,7 +20,7 @@ object Main{
   type Program[t] =
     CReader[(Map[String,Seq[_]], SparkContext, SQLContext, HBaseContext),t]
 
-  val workflow = Workflow[RDD,Program](
+  val workflow = Workflow[RDD,Program,String,String](
     ReadCities[Program],
     ReadPopulations[Program],
     Transforms[Program],

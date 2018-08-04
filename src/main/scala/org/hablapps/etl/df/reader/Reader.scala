@@ -21,13 +21,13 @@ extends etl.Reader[DataPhrame,P,T]{
 
   /* Reader API */
 
-  def apply(from: String): P[DataPhrame[Validated[(Data,List[Error]), T]]] =
+  def apply(from: S): P[DataPhrame[Validated[(Data,List[Error]), T]]] =
     load(from) map validate
 
-  def valid(from: String): P[DataPhrame[T]] =
+  def valid(from: S): P[DataPhrame[T]] =
     apply(from) map filterValid
 
-  def invalid(from: String): P[DataPhrame[(Data, List[Error])]] =
+  def invalid(from: S): P[DataPhrame[(Data, List[Error])]] =
     apply(from) map (filterSomeInvalid(_)(ErrorSchema.fieldNames: _*))
 
   /* DataFrame validation functions */

@@ -15,8 +15,9 @@ abstract class SQLReader[
 ] extends Reader[P, T]{
 
   type Data = Row
+  type S = String
 
-  def load(from: String): P[RDD[Data]] =
+  def load(from: S): P[RDD[Data]] =
     MonadReader[P, SQLContext].ask map {
       _.read.load(from).rdd
     }

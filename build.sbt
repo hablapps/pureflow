@@ -2,10 +2,15 @@ val clouderaRelease     = "cdh5.11.2"
 val sparkVersion        = "1.6.0-" + clouderaRelease
 val hadoopVersion       = "2.6.0-" + clouderaRelease
 val hbaseVersion        = "1.2.0-" + clouderaRelease
+val phoenixVersion      = "4.13.2-" + clouderaRelease
 val slf4jVersion        = "1.7.10"
 val holdenKarauVersion  = "1.6.0_0.9.0"
 val scalaTestVersion    = "3.0.5"
-val phoenixVersion      = "4.13.2-" + clouderaRelease
+val catsVersion         = "0.9.0"
+val jettyUtilVersion    = "9.3.11.v20160721"
+val paradiseVersion     = "2.1.0"
+val kindProjVersion     = "0.9.3"
+val naturallyVersion    = "0.1-SNAPSHOT"
 
 lazy val root = (project in file("."))
   .settings(
@@ -70,8 +75,8 @@ lazy val root = (project in file("."))
 
     // Hablapps
     libraryDependencies ++= Seq(
-      "org.hablapps" %% "naturally" % "0.1-SNAPSHOT",
-      compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+      "org.hablapps" %% "naturally" % naturallyVersion,
+      compilerPlugin("org.scalamacros" % "paradise" % paradiseVersion cross CrossVersion.full)
     ),
 
     // Testing
@@ -79,9 +84,9 @@ lazy val root = (project in file("."))
 
     libraryDependencies ++= Seq(
     "org.scalatest" %% "scalatest" % scalaTestVersion,
-    "org.eclipse.jetty" % "jetty-util" % "9.3.11.v20160721"),
+    "org.eclipse.jetty" % "jetty-util" % jettyUtilVersion),
 
-    libraryDependencies += "org.typelevel" %% "cats" % "0.9.0",
+    libraryDependencies += "org.typelevel" %% "cats" % catsVersion,
 
     excludeDependencies ++= Seq(
       "asm",
@@ -92,7 +97,7 @@ lazy val root = (project in file("."))
       "tomcat"
     ),
 
-    addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3")
+    addCompilerPlugin("org.spire-math" %% "kind-projector" % kindProjVersion)
   )
 
 // Based on Hadoop Mini Cluster tests from Alpine's PluginSDK (Apache licensed)
