@@ -14,6 +14,9 @@ trait TransformDefs{
   type Transform2[Collection[_], P[_], I1, I2, O] =
     Kleisli[P, (Collection[I1], Collection[I2]), Collection[O]]
 
+  type Transform21[Collection[_], P[_], I1, I2, I, O] =
+    Kleisli[P, (Collection[I1], Collection[I2]), I => Collection[O]]
+
   type TransformB2[Collection[_], P[_], I1, I2, O] =
     Kleisli[P, (Collection[I1], I2), Collection[O]]
 
@@ -21,4 +24,6 @@ trait TransformDefs{
     Kleisli[P, (Collection[I1], Collection[I2], Collection[I3]), Collection[O]]
 
   // etc.
+
+//  val t: Transform[int, string, broadcast[int] => boolean]
 }

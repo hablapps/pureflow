@@ -1,20 +1,22 @@
 package org.hablapps
 package bbva
-package rdd.main
+package rdd
+package main
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.hadoop.hbase.spark.HBaseContext
 import org.apache.spark.sql.SQLContext
-import org.hablapps.bbva.rdd.Transforms
-import org.hablapps.etl._
+import cats.data.{Reader => CReader}
 import org.hablapps.populations.rdd.main.SaveEnrichedPopulations
+import org.hablapps.etl._
 
-object Main{
+
+object MainBbva{
 
   // Create workflow
 
-  type Program[t] = cats.data.Reader[(SparkContext, SQLContext, HBaseContext), t]
+  type Program[t] = CReader[(SparkContext, SQLContext, HBaseContext), t]
 
   val workflow = Workflow[RDD, Program](
     ReadRetRet[Program],
