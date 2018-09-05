@@ -11,8 +11,7 @@ import org.apache.spark.sql._, expressions._, types._, functions._
 import cats.data.{ValidatedNel, Validated}
 import cats.Functor, cats.syntax.functor._
 
-abstract class Reader[P[_]: Functor, T: ClassTag]
-extends etl.Reader[DataPhrame,P,T]{
+abstract class Reader[P[_]: Functor, T: ClassTag] extends etl.Reader[DataPhrame,P,T]{
 
   val Schema: StructType
   val ErrorSchema: StructType
