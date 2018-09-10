@@ -8,7 +8,8 @@ import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.hadoop.hbase.spark.HBaseContext
 import org.apache.spark.sql.SQLContext
 import cats.data.{Reader => CReader}
-import org.hablapps.populations.rdd.main.SaveEnrichedPopulations
+import org.apache.spark.broadcast.Broadcast
+import org.hablapps.populations.rdd.main.SaveEnriched360
 import org.hablapps.etl._
 
 
@@ -18,11 +19,15 @@ object MainBbva{
 
   type Program[t] = CReader[(SparkContext, SQLContext, HBaseContext), t]
 
+  private val transforms: Transforms[Program] = Transforms[Program]
+  private val readRetRet: ReadRetRet[Program] = ReadRetRet[Program]
+  private val SaveEnrichedPopulations: SaveEnriched360[Program] = SaveEnriched360[Program]
+
   val workflow = Workflow[RDD, Program](
-    ReadRetRet[Program],
+    readRetRet,
     // EnrichPopulations[Program],
-    Transforms[Program],
-    SaveEnrichedPopulations[Program])
+    transforms,
+    SaveEnrichedPopulations)
 
 
   // Run workflow
@@ -34,8 +39,9 @@ object MainBbva{
   val map = Map("USX" -> "USD")
   // Compile workflow
 
+  private val value: Broadcast[Map[String, String]] = sc.broadcast(map)
   val compiledProgram: Program[Unit] =
-    workflow.run("populations.parquet", "enriched.hb", sc.broadcast(map))
+    workflow.run("populations.parquet", "enriched.hb", value)
 
   compiledProgram((sc, sqlContext, hc))
 }

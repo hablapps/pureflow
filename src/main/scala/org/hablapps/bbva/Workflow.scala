@@ -8,18 +8,18 @@ import cats.syntax.functor._
 import org.hablapps.etl._
 
 case class Workflow[Col[_], P[_]: Monad](
-  ReadRetRet: Reader[Col, P, RetRet],
-  Transforms: Transforms[Col, P],
+  readRetRet: Reader[Col, P, RetRet],
+  transforms: Transforms[Col, P],
   SaveEnrichedPopulations: Writer[Col, P, Ret360Enriched]){
 
   def run(
            retret_src: String,
            enriched_dst: String,
-           bcForeignExchange: Transforms.SharedVariable[Map[String, String]]
+           bcForeignExchange: transforms.SharedVariable[Map[String, String]]
          ): P[Unit] =
     for {
-      populations <- ReadRetRet.valid(retret_src)
-      enrichedPopulations <- Transforms.Enrich360(populations, bcForeignExchange)
+      populations <- readRetRet.valid(retret_src)
+      enrichedPopulations <- transforms.Enrich360(populations, bcForeignExchange)
       _ <- SaveEnrichedPopulations.write(enrichedPopulations, enriched_dst)
     } yield ()
 }

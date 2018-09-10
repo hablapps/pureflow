@@ -14,7 +14,7 @@ import org.hablapps.etl._
 
 import scala.util.Try
 
-case class Transforms[P[_]: Applicative]() extends bbva.Transforms[RDD, P]{
+case class Transforms[P[_]: Applicative] extends bbva.Transforms[RDD, P]{
 
   type SharedVariable[T] = Broadcast[T]
 
@@ -889,11 +889,11 @@ case class Transforms[P[_]: Applicative]() extends bbva.Transforms[RDD, P]{
 
 }
 
-object EnrichPopulations{
+object Enrich360{
 
-  def apply[P[_]: Applicative]: TransformB2[RDD, P, RetRet, Broadcast[Map[String, String]],Ret360Enriched] =
+  def apply[P[_]: Applicative]: TransformB2[RDD, P, RetRet, Broadcast[Map[String, String]], Ret360Enriched] =
     Kleisli{
-      case (rawP, cityAbbrev) =>
-        Transforms[P].Enrich360(rawP, cityAbbrev)
+      case (rawP, forExMap) =>
+        Transforms[P].Enrich360(rawP, forExMap)
     }
 }
