@@ -18,7 +18,7 @@ package object translate {
     }
   }
 
-  implicit class DataFrameTestUtilities(df: DataFrame) { // TODO(jfuentes): This increments compilation time from 2s to 42s?
+  implicit class DataFrameTestUtilities(df: DataFrame) {
     def toList[A](f: Row => A): List[A] = df.collect().toList.map(f)
   }
 
