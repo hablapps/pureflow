@@ -13,6 +13,7 @@ import org.hablapps.bbva.ParseoRet._
 import org.hablapps.etl._
 
 import scala.util.Try
+import scala.xml.Elem
 
 case class Transforms[P[_]: Applicative] extends bbva.Transforms[RDD, P, Broadcast[Map[String, String]]]{
 
@@ -157,6 +158,11 @@ case class Transforms[P[_]: Applicative] extends bbva.Transforms[RDD, P, Broadca
 
   }
 
+  trait RetExtracted {
+    def
+
+  }
+
   private def parsingLbnPseEvents(retret: RetRet) = {
 
     val des_log = retret.des_log
@@ -176,7 +182,7 @@ case class Transforms[P[_]: Applicative] extends bbva.Transforms[RDD, P, Broadca
     val des_log2: String = if (MifidParseoRETConstants.NotFound != des_log.indexOf("<")) {
       des_log.substring(des_log.indexOf("<")).replaceAll("#parameters#", "parameters").replaceAll("""(="[^"]*)(<)([^"]*")""", "$1&lt;$3").replaceAll("""(="[^"]*)(>)([^"]*")""", "$1&gt;$3")
     } else ""
-    val xml_log = xml.XML.loadString(des_log2)
+    val xml_log: Elem = xml.XML.loadString(des_log2)
 
     val cod_producto = (xml_log \ MifidParseoRETConstants.TagData \ MifidParseoRETConstants.TagDealNotification \ MifidParseoRETConstants.TagDeal \ MifidParseoRETConstants.Tagfxcrossdeal \ "@type").toString
 
