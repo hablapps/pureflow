@@ -14,11 +14,9 @@ import org.hablapps.etl._
 
 import scala.util.Try
 
-case class Transforms[P[_]: Applicative] extends bbva.Transforms[RDD, P]{
+case class Transforms[P[_]: Applicative] extends bbva.Transforms[RDD, P, Broadcast[Map[String, String]]]{
 
-  type SharedVariable[T] = Broadcast[T]
-
-  def Enrich360(rawP: RDD[RetRet], bcForeignExchange: SharedVariable[Map[String, String]]): P[RDD[Ret360Enriched]] = {
+  def Enrich360(rawP: RDD[RetRet], bcForeignExchange: Broadcast[Map[String, String]]): P[RDD[Ret360Enriched]] = {
     val rddInicioOTC: RDD[Row] = rawP.mapPartitions { retretList =>
       retretList.collect {
         /** Comienza el parseo del evento Submit */

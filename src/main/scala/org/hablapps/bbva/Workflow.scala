@@ -7,15 +7,15 @@ import cats.syntax.flatMap._
 import cats.syntax.functor._
 import org.hablapps.etl._
 
-case class Workflow[Col[_], P[_]: Monad](
+case class Workflow[Col[_], P[_]: Monad, BC](
   readRetRet: Reader[Col, P, RetRet],
-  transforms: Transforms[Col, P],
+  transforms: bbva.Transforms[Col, P, BC],
   SaveEnrichedPopulations: Writer[Col, P, Ret360Enriched]){
 
   def run(
            retret_src: String,
            enriched_dst: String,
-           bcForeignExchange: transforms.SharedVariable[Map[String, String]]
+           bcForeignExchange: BC
          ): P[Unit] =
     for {
       populations <- readRetRet.valid(retret_src)

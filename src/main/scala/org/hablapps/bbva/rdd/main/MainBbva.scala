@@ -19,15 +19,12 @@ object MainBbva{
 
   type Program[t] = CReader[(SparkContext, SQLContext, HBaseContext), t]
 
-  private val transforms: Transforms[Program] = Transforms[Program]
-  private val readRetRet: ReadRetRet[Program] = ReadRetRet[Program]
-  private val SaveEnrichedPopulations: SaveEnriched360[Program] = SaveEnriched360[Program]
 
-  val workflow = Workflow[RDD, Program](
-    readRetRet,
+  val workflow = Workflow[RDD, Program, Broadcast[Map[String, String]]](
+    ReadRetRet[Program],
     // EnrichPopulations[Program],
-    transforms,
-    SaveEnrichedPopulations)
+    Transforms[Program],
+    SaveEnriched360[Program])
 
 
   // Run workflow
