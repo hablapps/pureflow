@@ -13,7 +13,7 @@ import org.hablapps.etl.df.reader._, instances._
 
 import Population._
 
-case class ReadPopulations[P[_]: MonadReader[?[_], SQLContext]]
+trait ReadPopulations[P[_]]
 extends SQLReader[P, Population]{
 
   type Data = Row
@@ -43,7 +43,9 @@ extends SQLReader[P, Population]{
     if (population < 0) NegativePopulation(population) else null)
 }
 
-
+object ReadPopulations {
+  def apply[P[_]: MonadReader[?[_], SQLContext]] = new ReadPopulations[P] {}
+}
 
 
 

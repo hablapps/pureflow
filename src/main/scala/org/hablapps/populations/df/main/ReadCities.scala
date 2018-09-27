@@ -6,5 +6,9 @@ package main
 import org.hablapps.etl.df.reader.instances._
 import cats.MonadReader
 
-case class ReadCities[P[_]: MonadReader[?[_], MapReader.Env]]
-extends MapReader[P, City]
+
+class ReadCities[P[_]: MonadReader[?[_], MapReader.Env]] extends MapReader[P, City]
+
+object ReadCities {
+  def apply[P[_]: MonadReader[?[_], MapReader.Env]] = new ReadCities[P]
+}

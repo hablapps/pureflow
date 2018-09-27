@@ -9,7 +9,7 @@ import org.apache.spark.rdd.RDD
 
 import org.hablapps.etl._
 
-case class Transforms[P[_]: Applicative] extends populations.Transforms[RDD, P]{
+class Transforms[P[_]: Applicative] extends populations.Transforms[RDD, P]{
 
   def EnrichPopulations(rawP: RDD[Population], cityAbbrev: RDD[City]) =
     rawP.map(p => (p.name, p))
@@ -17,6 +17,10 @@ case class Transforms[P[_]: Applicative] extends populations.Transforms[RDD, P]{
       .map{ case (k, (Population(_,p), City(_,a))) =>
         EnrichedPopulation(k, a, p)
       }.pure[P]
+}
+
+object Transforms {
+  def apply[P[_]: Applicative] = new Transforms[P]
 }
 
 object EnrichPopulations{

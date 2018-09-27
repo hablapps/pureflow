@@ -1,18 +1,19 @@
 val clouderaRelease     = "cdh5.11.2"
-val sparkVersion        = "1.6.0-" + clouderaRelease
+val sparkVersion        = "1.6.0"
 val hadoopVersion       = "2.6.0-" + clouderaRelease
 val hbaseVersion        = "1.2.0-" + clouderaRelease
 val slf4jVersion        = "1.7.10"
 val holdenKarauVersion  = "1.6.0_0.9.0"
 val scalaTestVersion    = "3.0.5"
 val phoenixVersion      = "4.13.2-" + clouderaRelease
+val framelessVersion    = "0.5.0"
 
 lazy val root = (project in file("."))
   .settings(
     organization := "es.hablapps",
     name := "spark_etl",
     version := "0.0.1-SNAPSHOT",
-    scalaVersion := "2.10.6",
+    scalaVersion := "2.11.12",
 
     partialUnificationModule := "com.milessabin" % "si2712fix-plugin" % "1.2.0",
 
@@ -67,6 +68,10 @@ lazy val root = (project in file("."))
       "org.apache.hadoop" % "hadoop-yarn-server-tests" % hadoopVersion % "compile,test" classifier "" classifier "tests",
       "org.apache.hadoop" % "hadoop-yarn-server-web-proxy" % hadoopVersion % "compile,test" classifier "" classifier "tests",
       "org.apache.hadoop" % "hadoop-minicluster" % hadoopVersion % "compile,test")),
+
+    libraryDependencies ++= Seq(
+      "org.typelevel" %% "frameless-dataset" % framelessVersion
+    ),
 
     // Hablapps
     libraryDependencies ++= Seq(

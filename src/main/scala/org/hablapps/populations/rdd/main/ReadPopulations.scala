@@ -10,7 +10,7 @@ import cats.syntax.cartesian._
 
 import org.hablapps.etl.rdd._, reader._, instances._
 
-case class ReadPopulations[P[_]: MonadReader[?[_], SQLContext]]
+class ReadPopulations[P[_]: MonadReader[?[_], SQLContext]]
 extends SQLReader[P, Population] with ValidatedHelpers{
 
   type Error = Population.Error
@@ -24,4 +24,8 @@ extends SQLReader[P, Population] with ValidatedHelpers{
 
   def getPopulation(population: Long): ValidatedNel[Error, Long] =
     population.unless(_ < 0)(Population.NegativePopulation(population))
+}
+
+object ReadPopulations {
+  def apply[P[_]: MonadReader[?[_], SQLContext]] = new ReadPopulations[P]
 }

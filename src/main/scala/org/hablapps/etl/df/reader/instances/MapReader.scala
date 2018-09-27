@@ -34,4 +34,5 @@ extends Reader[P, T]{
 object MapReader{
   type Env = (Map[String,Seq[_]], SQLContext)
   // type Program[T] = CReader[Env, T]
+  def apply[P[_]: MonadReader[?[_], Env], T <: Product : TypeTag : ClassTag] = new MapReader[P, T] {}
 }

@@ -14,14 +14,13 @@ import org.hablapps.etl.df._, reader.instances.MapReader
 import org.hablapps.etl._
 import naturally.mtl._
 
+import populations.df.main.ReadPopulations
+
 class WorkflowSpec extends FunSpec with Matchers with DataFrameSuiteBase{
 
   // CREATE WORKFLOW
 
   type Program[t] = State[(Map[String,Seq[_]], SQLContext),t]
-
-  case class ReadPopulations[P[_]: MonadReader[?[_], MapReader.Env]]
-  extends reader.instances.MapReader[P, Population]
 
   val workflow = Workflow[DataPhrame,Program](
     main.ReadCities[Program],

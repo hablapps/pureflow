@@ -10,4 +10,8 @@ import cats.MonadReader
 
 import org.hablapps.etl.rdd.reader.instances._
 
-case class ReadCities[P[_]: MonadReader[?[_], MapReader.Env]] extends MapReader[P, City]
+class ReadCities[P[_]: MonadReader[?[_], MapReader.Env]] extends MapReader[P, City]
+
+object ReadCities {
+  def apply[P[_]: MonadReader[?[_], MapReader.Env]] = new ReadCities[P]
+}
