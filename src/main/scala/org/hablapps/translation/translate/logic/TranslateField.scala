@@ -11,7 +11,7 @@ import org.hablapps.etl.df.DataPhrame
 import scala.reflect.ClassTag
 
 
-case class TranslationResult(translated: DataFrame, discarded: DataFrame)
+case class TranslationResult[Col[_], Schema](translated: Col[Schema], discarded: Col[Schema])
 
 class TranslateFieldDF(
     inputColumn: String,
@@ -68,43 +68,36 @@ class TranslateField2DF(
 
 // TODO(jfuentes): ¿Qué pasa cuando la API es una clase con argumentos de entrada?
 // ¿Los muevo al apply? ¿Junto los argumentos en una case class?
-// case class Foo(
-//   inputColumn: String,
-//   lookupKeyColumn: String,
-//   lookupValueColumn: String,
-//   outputColumn: String,
-//   ioId: String)
+case class Foo(
+  inputColumn: String,
+  lookupKeyColumn: String,
+  lookupValueColumn: String,
+  outputColumn: String,
+  ioId: String)
 
 // abstract class TranslateField2DFAPI[Col[_]](foo: Foo) {
 //   def apply(input: Col[Any], lookup: Col[Any]): Col[Any]
 // }
 
-abstract class TranslateField2DFAPI[Col[_]](
-    inputColumn: String,
-    lookupKeyColumn: String,
-    lookupValueColumn: String,
-    outputColumn: String,
-    ioId: String) {
-  def apply(input: Col[Any], lookup: Col[Any]): Col[Any]
+trait TranslateField2DFAPI[Col[_], Input, Lookup] {
+  // type Out <: Dynamic
+  type Out = Dynamic
+  def apply(input: Col[Input], lookup: Col[Lookup]): Foo => Col[Out]
 }
 
-class TranslateField3DF(
-    inputColumn: String,
-    lookupKeyColumn: String,
-    lookupValueColumn: String,
-    outputColumn: String,
-    ioId: String) extends TranslateField2DFAPI[DataPhrame](inputColumn, lookupKeyColumn, lookupValueColumn, outputColumn, ioId) {
+object TranslateField3DF extends TranslateField2DFAPI[DataPhrame, Dynamic, Dynamic] {
 
-  def apply(input: DataFrame, lookup: DataFrame): DataFrame = {
-    input.persist()
-    val translated = new TranslateFieldDF(inputColumn, lookupKeyColumn, lookupValueColumn, outputColumn).apply2(
-      input
-        .where(col("IO_ID") === ioId),
-      lookup)
-    val untranslated = input
-      .where(col("IO_ID") !== ioId)
-      .withColumn(outputColumn, lit(null))
-    input.unpersist()
-    translated unionAll untranslated.select(translated.columns.map(col): _*)
+  def apply(input: DataFrame, lookup: DataFrame): Foo => DataFrame = {
+    case Foo(inputColumn, lookupKeyColumn, lookupValueColumn, outputColumn, ioId) =>
+      input.persist()
+      val translated = new TranslateFieldDF(inputColumn, lookupKeyColumn, lookupValueColumn, outputColumn).apply2(
+        input
+          .where(col("IO_ID") === ioId),
+        lookup)
+      val untranslated = input
+        .where(col("IO_ID") !== ioId)
+        .withColumn(outputColumn, lit(null))
+      input.unpersist()
+      translated unionAll untranslated.select(translated.columns.map(col): _*)
   }
 }

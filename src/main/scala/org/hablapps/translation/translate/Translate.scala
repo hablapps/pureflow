@@ -8,16 +8,19 @@ import org.hablapps.etl.rdd._
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.SQLContext
 import readConfig.classes.TranslateColumnConf2
-import logic.{TranslateField2DF, SplitTranslation, LogErrors}
+import logic.{TranslateField2DFAPI, SplitTranslationAPI, LogErrorsAPI, Foo}
 
-import org.hablapps.etl.df.reader.Reader
-import org.hablapps.etl.df.writer.Writer
+import org.hablapps.etl.Reader
+import org.hablapps.etl.Writer
 
-case class Translate[P[_], Input, Lookup](
-  ReadInput: Reader[P, Input],
-  ReadLookup: Reader[P, Lookup],
-  SaveTranslation: Writer[P, Any], // TODO(jfuentes): Input + Translation
-  SaveDiscarded: Writer[P, Any]){ // TODO(jfuentes): Input + Translation Errors
+case class Translate[P[_], Col[_], Input, Lookup](
+  ReadInput: Reader[Col, P, Input],
+  ReadLookup: Reader[Col, P, Lookup],
+  SaveTranslation: Writer[Col, P, Dynamic], // TODO(jfuentes): Input + Translation
+  SaveDiscarded: Writer[Col, P, Dynamic], // TODO(jfuentes): Input + Translation Errors
+  TranslateField: TranslateField2DFAPI[Col, Dynamic, Dynamic],
+  SplitTranslation: SplitTranslationAPI[Col, Dynamic],
+  LogErrors: LogErrorsAPI[Col, Dynamic]){
 
   def run(
       inputSrc: String,
@@ -28,16 +31,16 @@ case class Translate[P[_], Input, Lookup](
     for {
       input <- ReadInput.valid(inputSrc)
       translation <-
-        translateColumns.foldLeft(input.pure) { (accP, tc) =>
+        translateColumns.foldLeft(input.asInstanceOf[Col[Dynamic]].pure) { (accP, tc) =>
           for {
             lookup <- ReadLookup.valid(tc.lookupSrc)
             acc <- accP
-          } yield new TranslateField2DF(
+          } yield TranslateField(acc, lookup.asInstanceOf[Col[Dynamic]])(Foo(
             tc.inputColumn,
             tc.lookupKeyColumn,
             tc.lookupValueColumn,
             tc.outputColumn,
-            tc.ioId)(acc, lookup)
+            tc.ioId))
         }
       translationResult <- SplitTranslation(translation, translateColumns).pure
       _ <- SaveTranslation.write(translationResult.translated, translationSrc)

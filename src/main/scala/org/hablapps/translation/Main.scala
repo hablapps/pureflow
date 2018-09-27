@@ -10,6 +10,7 @@ import readConfig.classes._
 import readConfig.readers._
 import translate.Translate
 import translate.readers._
+import translate.logic.{TranslateField3DF, SplitTranslation, LogErrors}
 import lib._
 
 import org.hablapps.etl.df.reader.Reader
@@ -17,7 +18,7 @@ import org.hablapps.etl.df.reader.instances.SQLReader
 import org.hablapps.etl.Writer
 import org.hablapps.etl.df.DataPhrame
 
-object Main {
+object Main extends App {
 
   type Env = SQLContext
   type Program[A] = CReader[Env, A]
@@ -35,11 +36,14 @@ object Main {
 
   // Create translate workflow
 
-  val workflow = Translate[Program, Any, Any](
+  val workflow = Translate[Program, DataPhrame, Dynamic, Dynamic](
     inputReader,
     inputReader,
     parquetWriter,
-    parquetWriter)
+    parquetWriter,
+    TranslateField3DF,
+    SplitTranslation,
+    LogErrors)
 
   // Compile workflow
 
@@ -59,7 +63,7 @@ object Main {
 
   // Run workflow
 
-  val cfg = new SparkConf().setAppName("translation")
+  val cfg = new SparkConf().setAppName("translation").setMaster("local")
   val sc = SparkContext.getOrCreate(cfg)
   val sqlContext = new SQLContext(sc)
 

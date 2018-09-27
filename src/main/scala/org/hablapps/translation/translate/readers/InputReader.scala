@@ -12,7 +12,7 @@ import org.hablapps.etl.df.reader.instances.SQLReader
 import cats.MonadReader
 import org.apache.spark.sql.SQLContext
 
-class InputReader[P[_]: MonadReader[?[_], SQLContext]] extends SQLReader[P, Any] {
+class InputReader[P[_]: MonadReader[?[_], SQLContext]] extends SQLReader[P, Dynamic] {
 
   val ErrorSchema: StructType = StructType(List.empty)
 

@@ -9,12 +9,13 @@ import com.holdenkarau.spark.testing.DataFrameSuiteBase
 import cats.data.{Reader => CReader, State}
 
 import org.hablapps.etl.rdd._
-import org.hablapps.etl._
+import org.hablapps.etl._, df.DataPhrame
 
 import org.apache.spark.sql.{DataFrame, SQLContext, Row}
 
 import lib._
 import translation.translate.Translate
+import translation.translate.logic.{TranslateField3DF, SplitTranslation, LogErrors}
 import readConfig.classes.TranslateColumnConf2
 
 
@@ -30,11 +31,14 @@ class WorkflowSpec2 extends FunSpec with Matchers with DataFrameSuiteBase {
   val personLUDFReader = new ListDFReaderState[Env, PersonLU](_._1, _._3)
   val translationWriter = new ListDFWriter[Env](df => env => (env._1, env._2, env._3, df.toList(PersonTranslated.fromRow), env._5))
   val discardedWriter = new ListDFWriter[Env](df => env => (env._1, env._2, env._3, env._4, df.toList(PersonTranslated.fromRow)))
-  val workflow = Translate[Program, Person, PersonLU](
+  val workflow = Translate[Program, DataPhrame, Person, PersonLU](
     personDFReader,
     personLUDFReader,
     translationWriter,
-    discardedWriter)
+    discardedWriter,
+    TranslateField3DF,
+    SplitTranslation,
+    LogErrors)
 
   // COMPILE TO READER
 

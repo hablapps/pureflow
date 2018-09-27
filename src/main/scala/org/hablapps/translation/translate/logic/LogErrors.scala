@@ -3,12 +3,19 @@ package translation
 package translate
 package logic
 
+import etl.df.DataPhrame
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, Row}
 import org.apache.spark.sql.functions.col
 import readConfig.classes.TranslateColumnConf2
 
-object LogErrors {
+abstract class LogErrorsAPI[Col[_], Schema] {
+  def apply(
+    discarded: Col[Schema],
+    translateColumns: List[TranslateColumnConf2]): Option[RDD[String]]
+}
+
+object LogErrors extends LogErrorsAPI[DataPhrame, Dynamic] {
 
   def apply(
       discarded: DataFrame,
