@@ -11,6 +11,7 @@ import cats.data.{Reader => CReader}
 import org.apache.spark.broadcast.Broadcast
 import org.hablapps.populations.rdd.main.SaveEnriched360
 import org.hablapps.etl._
+import naturally.mtl._
 
 
 object MainBbva{

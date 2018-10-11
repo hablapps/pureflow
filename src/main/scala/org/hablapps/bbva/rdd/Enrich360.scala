@@ -17,6 +17,7 @@ import scala.util.Try
 import scala.xml.Elem
 
 case class Transforms[P[_]: Applicative] extends bbva.Transforms[RDD, P, Broadcast[Map[String, String]]]{
+  def Enrich360(rawP: RDD[RetRet], bcForeignExchange: Broadcast[Map[String, String]]): P[RDD[Ret360Enriched]] = ???
 
   def Enrich360[T: ClassTag](rawP: RDD[T], bcForeignExchange: Broadcast[Map[String, String]])(implicit extracted: RetExtracted[T]): P[RDD[Ret360Enriched]] = {
     val rddInicioOTC: RDD[Row] = rawP.mapPartitions { retretList =>
